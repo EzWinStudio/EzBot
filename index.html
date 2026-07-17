@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Adı - Güçlü Çoklu Platform Bot Çözümü</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #7289da;
+            --secondary-color: #99aab5;
+            --dark-bg: #23272a;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        
+        .navbar {
+            background-color: var(--dark-bg);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #2c2f33 100%);
+            color: white;
+            padding: 120px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+            opacity: 0.1;
+        }
+        
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+        }
+        
+        .cta-button {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background-color: #5865f2;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-robot me-2"></i>Bot Adı
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#features">Özellikler</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#how-it-works">Nasıl Çalışır?</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#download">İndir</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#support">Destek</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center d-flex align-items-center">
+        <div class="container position-relative">
+            <h1 class="display-3 fw-bold mb-4">Güçlü ve Esnek Bot Çözümünüz</h1>
+            <p class="lead mb-5">Discord, Slack ve diğer platformlarda yanınızda. Kolay kurulum, güçlü özellikler.</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="#download" class="btn btn-primary cta-button">Botu Ekle</a>
+                <a href="#features" class="btn btn-outline-light cta-button">Daha Fazla Bilgi</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Öne Çıkan Özellikler</h2>
+                <p class="text-muted">Botumuzun sunduğu güçlü araçlar</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 p-4">
+                        <div class="card-body text-center">
+                            <div class="feature-icon mb-3">
+                                <i class="bi bi-chat-dots"></i>
+                            </div>
+                            <h5 class="card-title">Akıllı Sohbet</h5>
+                            <p class="card-text">Doğal dilde iletişim kurabilen gelişmiş yapay zeka destekli chat yetenekleri.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 p-4">
+                        <div class="card-body text-center">
+                            <div class="feature-icon mb-3">
+                                <i class="bi bi-shield-lock"></i>
+                            </div>
+                            <h5 class="card-title">Güvenlik & Moderasyon</h5>
+                            <p class="card-text">Otomatik spam önleme, kullanıcı yönetimi ve gelişmiş güvenlik sistemleri.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 p-4">
+                        <div class="card-body text-center">
+                            <div class="feature-icon mb-3">
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </div>
+                            <h5 class="card-title">İstatistik Paneli</h5>
+                            <p class="card-text">Gerçek zamanlı veriler ve analitik raporlarla performans takibi.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="bg-light py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Nasıl Çalışır?</h2>
+                <p class="text-muted">Üç adımla kolayca botu kurun ve kullanmaya başlayın</p>
+            </div>
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1374&q=80" 
+                         class="img-fluid rounded shadow" alt="Nasıl çalışır">
+                </div>
+                <div class="col-lg-6 order-lg-1">
+                    <ol class="list-unstyled">
+                        <li class="mb-4 d-flex">
+                            <div class="me-3">
+                                <span class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                      style="width: 40px; height: 40px;">1</span>
+                            </div>
+                            <div>
+                                <h5>Botu Sunucunuza Ekleyin</h5>
+                                <p>Discord geliştirici portalından resmi botumuzu ekleyin.</p>
+                            </div>
+                        </li>
+                        <li class="mb-4 d-flex">
+                            <div class="me-3">
+                                <span class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                      style="width: 40px; height: 40px;">2</span>
+                            </div>
+                            <div>
+                                <h5>Kurulum ve Ayarlar</h5>
+                                <p>Web panelimizden bot ayarlarını özelleştirin.</p>
+                            </div>
+                        </li>
+                        <li class="d-flex">
+                            <div class="me-3">
+                                <span class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                      style="width: 40px; height: 40px;">3</span>
+                            </div>
+                            <div>
+                                <h5>Kullanılmaya Başlayın</h5>
+                                <p>Botu kullanmaya hemen başlayın, destek ekibimiz yanınızda!</p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="py-5">
+        <div class="container text-center">
+            <h2 class="fw-bold mb-4">Hemen Başlayın</h2>
+            <p class="lead mb-4">Botu ücretsiz deneyin, gerekirse ücretsiz yükseltin.</p>
+            <a href="#" class="btn btn-primary btn-lg cta-button px-5">Botu Şimdi Ekle</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2026 Bot Adı. Tüm hakları saklıdır.</p>
+            <div class="mt-3">
+                <a href="#" class="text-white me-3"><i class="bi bi-discord fs-4"></i></a>
+                <a href="#" class="text-white me-3"><i class="bi bi-twitter-x fs-4"></i></a>
+                <a href="#" class="text-white"><i class="bi bi-github fs-4"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
