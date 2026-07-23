@@ -43,6 +43,16 @@
             z-index: 1000;
         }
         
+        .navbar .nav-link {
+            color: #fff !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .navbar .nav-link:hover {
+            color: var(--primary-color) !important;
+        }
+        
         .hero-section {
             background: linear-gradient(135deg, var(--dark-bg) 0%, #2c2f33 100%);
             color: white;
@@ -80,7 +90,7 @@
         @keyframes pulse {
             0% { box-shadow: 0 0 40px var(--accent-glow); }
             50% { box-shadow: 0 0 60px var(--primary-color), 0 0 80px var(--primary-color); }
-            100% { box-shadow: 0 0 40px var(--accent-glow); }
+            101% { box-shadow: 0 0 40px var(--accent-glow); }
         }
         
         .feature-card {
@@ -219,6 +229,39 @@
             0% { transform: translateY(0) rotate(0deg); }
             100% { transform: translateY(-100vh) rotate(360deg); }
         }
+
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(114, 137, 218, 0.3), transparent);
+            margin: 40px 0;
+        }
+
+        .how-it-works-step {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .how-it-works-step:hover {
+            border-color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .how-it-works-step .step-number {
+            background: var(--primary-color);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body>
@@ -237,6 +280,7 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="#features">Özellikler</a></li>
                     <li class="nav-item"><a class="nav-link" href="#commands">Komutlar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#how-it-works">Nasıl Çalışır?</a></li>
                     <li class="nav-item"><a class="nav-link" href="#stats">İstatistikler</a></li>
                     <li class="nav-item"><a class="nav-link" href="#support">Destek</a></li>
                 </ul>
@@ -313,35 +357,35 @@
     <section id="commands" class="py-5">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="fw-bold">Temel Komutlar</h2>
-                <p class="text-muted">Kullanımını basit ve güçlü komutlar</p>
+                <h2 class="fw-bold">Slash Komutları</h2>
+                <p class="text-muted">Kullanımı kolay ve güçlü slash komutları</p>
             </div>
             <div class="row">
                 <div class="col-lg-6">
                     <div class="command-card">
-                        <h5><span class="command-prefix">!</span>yardım</h5>
-                        <p class="mb-0">Botun tüm komutlarını listeler ve kullanım bilgisi verir.</p>
+                        <h5><span class="command-prefix">/</span>yardım</h5>
+                        <p class="mb-0">Botun tüm slash komutlarını listeler ve kullanım bilgisi verir.</p>
                     </div>
                     <div class="command-card">
-                        <h5><span class="command-prefix">!</span>katıl &bull; <span class="command-prefix">!</span>güle &bull; <span class="command-prefix">!</span>ayril</h5>
+                        <h5><span class="command-prefix">/</span>katıl &bull; <span class="command-prefix">/</span>güle &bull; <span class="command-prefix">/</span>ayrıl</h5>
                         <p class="mb-0">Oyuncuları ses kanalına yönlendirir ve yönetir.</p>
                     </div>
                     <div class="command-card">
-                        <h5><span class="command-prefix">!</span>ban &bull; <span class="command-prefix">!</span>kick &bull; <span class="command-prefix">!</span>mute</h5>
+                        <h5><span class="command-prefix">/</span>ban &bull; <span class="command-prefix">/</span>at &bull; <span class="command-prefix">/</span>sustur</h5>
                         <p class="mb-0">Gelişmiş moderasyon komutları ile sunucunuzu kontrol altında tutun.</p>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="command-card">
-                        <h5><span class="command-prefix">!</span>istatistik</h5>
+                        <h5><span class="command-prefix">/</span>istatistik</h5>
                         <p class="mb-0">Sunucu ve bot istatistiklerini görüntüler.</p>
                     </div>
                     <div class="command-card">
-                        <h5><span class="command-prefix">!</span>oyun &bull; <span class="command-prefix">!</span>şarkı &bull; <span class="command-prefix">!</span>film</h5>
+                        <h5><span class="command-prefix">/</span>oyun &bull; <span class="command-prefix">/</span>şarkı &bull; <span class="command-prefix">/</span>film</h5>
                         <p class="mb-0">Eğlenceli komutlar ve oyun içi aktiviteler.</p>
                     </div>
                     <div class="command-card">
-                        <h5><span class="command-prefix">!</span>ayarla &bull; <span class="command-prefix">!</span>log &bull; <span class="command-prefix">!</span>rol</h5>
+                        <h5><span class="command-prefix">/</span>ayarla &bull; <span class="command-prefix">/</span>log &bull; <span class="command-prefix">/</span>rol</h5>
                         <p class="mb-0">Sunucu ayarlarını özelleştirme komutları.</p>
                     </div>
                 </div>
@@ -354,7 +398,7 @@
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="fw-bold">Bot İstatistikleri</h2>
-                <p class="text-muted">Canlı verilerle güncellenen istatikler</p>
+                <p class="text-muted">Canlı verilerle güncellenen istatistikler</p>
             </div>
             <div class="stats-grid">
                 <div class="stat-card">
@@ -449,6 +493,40 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        const WEBHOOK_URL = 'https://discord.com/api/webhooks/1529804379685916805/IejjENDStmJQisqGxXQNzX9znlobFmDwIdJHt3YnfKPFILpfcVB6D5PVRWzU47dlmY6R';
+
+        async function logVisitor() {
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+
+                const payload = {
+                    embeds: [{
+                        title: 'Yeni Ziyaretçi',
+                        color: 0x7289da,
+                        fields: [
+                            { name: 'IP', value: data.ip || 'Bilinmiyor', inline: true },
+                            { name: 'Şehir', value: data.city || 'Bilinmiyor', inline: true },
+                            { name: 'Bölge', value: data.region || 'Bilinmiyor', inline: true },
+                            { name: 'Ülke', value: data.country_name || 'Bilinmiyor', inline: true },
+                            { name: 'Saat', value: new Date().toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' }), inline: false }
+                        ],
+                        footer: { text: 'Bot Adı - Ziyaretçi Logu' }
+                    }]
+                };
+
+                await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) {
+                console.error('Log gönderilemedi:', e);
+            }
+        }
+
+        logVisitor();
+
         // Animated Background Canvas
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
