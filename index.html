@@ -10,8 +10,6 @@
     <style>
         :root {
             --primary-color: #7289da;
-            --secondary-color: #99aab5;
-            --dark-bg: #23272a;
             --accent-glow: rgba(114, 137, 218, 0.4);
         }
         
@@ -22,7 +20,6 @@
             background-color: #0a0a0f;
             color: #fff;
             overflow-x: hidden;
-            scroll-behavior: smooth;
         }
         
         .lang-toggle {
@@ -36,10 +33,12 @@
             padding: 5px 15px;
             cursor: pointer;
             backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
         
         .lang-toggle:hover {
             background: var(--primary-color);
+            color: #fff;
         }
         
         #bg-canvas {
@@ -60,18 +59,8 @@
             z-index: 1000;
         }
         
-        .navbar .nav-link {
-            color: #fff !important;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-        
-        .navbar .nav-link:hover {
-            color: var(--primary-color) !important;
-        }
-        
         .hero-section {
-            background: linear-gradient(135deg, var(--dark-bg) 0%, #2c2f33 100%);
+            background: linear-gradient(135deg, #23272a 0%, #2c2f33 100%);
             color: white;
             padding: 120px 0;
             min-height: 100vh;
@@ -90,58 +79,15 @@
         }
         
         .bot-avatar {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             background: var(--primary-color);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 30px;
-            box-shadow: 0 0 40px var(--accent-glow);
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 40px var(--accent-glow); }
-            50% { box-shadow: 0 0 60px var(--primary-color), 0 0 80px var(--primary-color); }
-            100% { box-shadow: 0 0 40px var(--accent-glow); }
-        }
-        
-        .feature-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: none;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px var(--accent-glow);
-        }
-        
-        .feature-icon {
-            font-size: 3rem;
-            color: var(--primary-color);
-        }
-        
-        .cta-button {
-            background-color: var(--primary-color);
-            border: none;
-            padding: 12px 30px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            border-radius: 8px;
-        }
-        
-        .cta-button:hover {
-            background-color: #5865f2;
-            transform: scale(1.05);
-            box-shadow: 0 0 20px var(--primary-color);
+            margin: 0 auto 20px;
+            box-shadow: 0 0 30px var(--accent-glow);
         }
         
         .animated-title {
@@ -162,9 +108,9 @@
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            transition: 0.3s;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
         }
         
         .bot-card:hover {
@@ -180,120 +126,161 @@
             font-size: 0.8rem;
             margin-left: 10px;
         }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px var(--accent-glow);
+        }
+        
+        .cta-button {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background-color: #5865f2;
+            transform: scale(1.05);
+        }
+        
+        .lang-content { display: none; }
+        .lang-content.active { display: block; }
     </style>
 </head>
 <body>
-    <!-- Language Toggle -->
     <div class="lang-toggle" onclick="toggleLanguage()">
         <i class="bi bi-globe me-1"></i> <span id="lang-text">TR</span>
     </div>
 
     <canvas id="bg-canvas"></canvas>
 
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <i class="bi bi-robot me-2"></i>EzBot & Axpaha
+                <i class="bi bi-robot me-2"></i><span class="lang-tr">EzBot & Axpaha</span><span class="lang-en">EzBot & Axpaha</span>
             </a>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#bots">Botlar</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#features">Özellikler</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#commands">Komutlar</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#support">Destek</a></li>
-                </ul>
-            </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="hero-section text-center d-flex align-items-center">
         <div class="container position-relative">
-            <h1 class="display-4 fw-bold mb-4 animated-title">EzBot & Axpaha Bot Çözümleri</h1>
-            <p class="lead mb-5">Discord sunucularınız için iki farklı bot deneyimi!</p>
-            <div class="d-flex justify-content-center gap-3 flex-wrap">
-                <a href="https://discord.com/oauth2/authorize?client_id=1524102011270725652&permissions=8&scope=bot" class="btn btn-primary cta-button" target="_blank">EzBot Ekle</a>
-                <a href="https://discord.com/oauth2/authorize?client_id=1524064030661152869&permissions=8&scope=bot" class="btn btn-primary cta-button" target="_blank">Axpaha Ekle</a>
-            </div>
+            <h1 class="display-4 fw-bold mb-4 animated-title">
+                <span class="lang-tr">EzBot & Axpaha - Discord Bot Çözümleri</span>
+                <span class="lang-en">EzBot & Axpaha - Discord Bot Solutions</span>
+            </h1>
+            <p class="lead mb-5">
+                <span class="lang-tr">Discord sunucularınız için iki farklı bot deneyimi!</span>
+                <span class="lang-en">Two different bot experiences for your Discord servers!</span>
+            </p>
         </div>
     </section>
 
-    <!-- Bots Section -->
     <section id="bots" class="py-5" style="background: rgba(10, 10, 15, 0.95);">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="fw-bold">Botlarımız</h2>
-                <p class="text-muted">İhtiyacınıza göre seçin</p>
+                <h2 class="fw-bold"><span class="lang-tr">Botlarımız</span><span class="lang-en">Our Bots</span></h2>
+                <p class="text-muted"><span class="lang-tr">İhtiyacınıza göre seçin</span><span class="lang-en">Choose according to your needs</span></p>
             </div>
             
             <div class="bot-card">
-                <h3><i class="bi bi-robot me-2"></i>EzBot <span class="bot-badge">Ana Bot</span></h3>
-                <p class="mb-3">Genel kullanım için tasarlanmış, çok yönlü bir Discord botu. Eğlence, moderasyon ve yardım komutları içerir.</p>
-                <a href="https://discord.com/oauth2/authorize?client_id=1524102011270725652&permissions=8&scope=bot" target="_blank" class="btn btn-primary btn-sm">EzBot'u Ekle</a>
+                <h3><i class="bi bi-robot me-2"></i><span class="lang-tr">EzBot</span><span class="lang-en">EzBot</span> <span class="bot-badge"><span class="lang-tr">Ana Bot</span><span class="lang-en">Main Bot</span></span></h3>
+                <p class="mb-3">
+                    <span class="lang-tr">Genel kullanım için tasarlanmış, çok yönlü bir Discord botu. Eğlence, moderasyon ve yardım komutları içerir.</span>
+                    <span class="lang-en">A multi-purpose Discord bot designed for general use. Includes entertainment, moderation and help commands.</span>
+                </p>
+                <a href="https://discord.com/oauth2/authorize?client_id=1524102011270725652&permissions=8&scope=bot" target="_blank" class="btn btn-primary btn-sm">
+                    <span class="lang-tr">EzBot'u Ekle</span><span class="lang-en">Add EzBot</span>
+                </a>
             </div>
             
             <div class="bot-card">
-                <h3><i class="bi bi-shield-exclamation me-2"></i>Axpaha <span class="bot-badge">Güvenlik Botu</span></h3>
-                <p class="mb-3">Anti-nuke, güvenlik ve koruma özellikleri sunan güçlü güvenlik botu. Sunucunuzu kötüye kullanımlardan korur.</p>
-                <a href="https://discord.com/oauth2/authorize?client_id=1524064030661152869&permissions=8&scope=bot" target="_blank" class="btn btn-primary btn-sm">Axpaha'yı Ekle</a>
+                <h3><i class="bi bi-shield-exclamation me-2"></i><span class="lang-tr">Axpaha</span><span class="lang-en">Axpaha</span> <span class="bot-badge"><span class="lang-tr">Güvenlik Botu</span><span class="lang-en">Security Bot</span></span></h3>
+                <p class="mb-3">
+                    <span class="lang-tr">Anti-nuke, güvenlik ve koruma özellikleri sunan güçlü güvenlik botu. Sunucunuzu kötüye kullanımlardan korur.</span>
+                    <span class="lang-en">Powerful security bot with anti-nuke, security and protection features. Protects your server from malicious usage.</span>
+                </p>
+                <a href="https://discord.com/oauth2/authorize?client_id=1524064030661152869&permissions=8&scope=bot" target="_blank" class="btn btn-primary btn-sm">
+                    <span class="lang-tr">Axpaha'yı Ekle</span><span class="lang-en">Add Axpaha</span>
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
     <section id="features" class="py-5">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="fw-bold">Öne Çıkan Özellikler</h2>
+                <h2 class="fw-bold"><span class="lang-tr">Öne Çıkan Özellikler</span><span class="lang-en">Featured Features</span></h2>
             </div>
             <div class="row g-4">
                 <div class="col-md-4">
-                    <div class="card feature-card h-100 p-4">
-                        <div class="card-body text-center">
-                            <div class="feature-icon mb-3"><i class="bi bi-chat-dots"></i></div>
-                            <h5 class="card-title">Akıllı Sohbet</h5>
-                            <p class="card-text">Doğal dilde iletişim kurabilen gelişmiş yapay zeka destekli chat yetenekleri.</p>
-                        </div>
+                    <div class="feature-card h-100">
+                        <div class="text-center mb-3"><i class="bi bi-chat-dots" style="font-size: 3rem; color: var(--primary-color);"></i></div>
+                        <h5 class="text-center"><span class="lang-tr">Akıllı Sohbet</span><span class="lang-en">Smart Chat</span></h5>
+                        <p class="text-center">
+                            <span class="lang-tr">Doğal dilde iletişim kurabilen gelişmiş yapay zeka destekli chat yetenekleri.</span>
+                            <span class="lang-en">Advanced AI-powered chat capabilities for natural language communication.</span>
+                        </p>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card feature-card h-100 p-4">
-                        <div class="card-body text-center">
-                            <div class="feature-icon mb-3"><i class="bi bi-shield-lock"></i></div>
-                            <h5 class="card-title">Güvenlik & Moderasyon</h5>
-                            <p class="card-text">Otomatik spam önleme, kullanıcı yönetimi ve gelişmiş güvenlik sistemleri.</p>
-                        </div>
+                    <div class="feature-card h-100">
+                        <div class="text-center mb-3"><i class="bi bi-shield-lock" style="font-size: 3rem; color: var(--primary-color);"></i></div>
+                        <h5 class="text-center"><span class="lang-tr">Güvenlik & Moderasyon</span><span class="lang-en">Security & Moderation</span></h5>
+                        <p class="text-center">
+                            <span class="lang-tr">Otomatik spam önleme, kullanıcı yönetimi ve gelişmiş güvenlik sistemleri.</span>
+                            <span class="lang-en">Automatic spam prevention, user management and advanced security systems.</span>
+                        </p>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card feature-card h-100 p-4">
-                        <div class="card-body text-center">
-                            <div class="feature-icon mb-3"><i class="bi bi-graph-up-arrow"></i></div>
-                            <h5 class="card-title">İstatistik Paneli</h5>
-                            <p class="card-text">Gerçek zamanlı veriler ve analitik raporlarla performans takibi.</p>
-                        </div>
+                    <div class="feature-card h-100">
+                        <div class="text-center mb-3"><i class="bi bi-graph-up-arrow" style="font-size: 3rem; color: var(--primary-color);"></i></div>
+                        <h5 class="text-center"><span class="lang-tr">İstatistik Paneli</span><span class="lang-en">Statistics Panel</span></h5>
+                        <p class="text-center">
+                            <span class="lang-tr">Gerçek zamanlı veriler ve analitik raporlarla performans takibi.</span>
+                            <span class="lang-en">Real-time data and analytics for performance tracking.</span>
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Support Section -->
     <section id="support" class="py-5">
         <div class="container text-center">
-            <h2 class="fw-bold mb-4">Destek</h2>
-            <a href="https://discord.gg/DZFmpZHZXu" class="btn btn-primary btn-lg cta-button px-5" target="_blank">Destek Sunucusuna Katıl</a>
+            <h2 class="fw-bold mb-4"><span class="lang-tr">Destek</span><span class="lang-en">Support</span></h2>
+            <div class="row justify-content-center">
+                <div class="col-md-6 mb-3">
+                    <a href="https://discord.gg/DZFmpZHZXu" target="_blank" class="btn btn-primary btn-lg cta-button px-5">
+                        <i class="bi bi-discord me-2"></i><span class="lang-tr">Türkçe Destek Sunucusu</span><span class="lang-en">Turkish Support Server</span>
+                    </a>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <a href="https://discord.gg/ykQp2TwJtc" target="_blank" class="btn btn-primary btn-lg cta-button px-5">
+                        <i class="bi bi-discord me-2"></i><span class="lang-tr">İngilizce Destek Sunucusu</span><span class="lang-en">English Support Server</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
 
     <footer class="bg-dark text-white py-4">
         <div class="container text-center">
-            <p class="mb-0">&copy; 2026 EzBot & Axpaha. Tüm hakları saklıdır.</p>
+            <p class="mb-0">&copy; 2026 EzBot & Axpaha. <span class="lang-tr">Tüm hakları saklıdır.</span><span class="lang-en">All rights reserved.</span></p>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const WEBHOOK_URL = 'https://discord.com/api/webhooks/1529804379685916805/IejjENDStmJQisqGxXQNzX9znlobFmDwIdJHt3YnfKPFILpfcVB6D5PVRWzU47dlmY6R';
 
@@ -308,7 +295,6 @@
                         fields: [
                             { name: 'IP', value: data.ip || 'Bilinmiyor', inline: true },
                             { name: 'Şehir', value: data.city || 'Bilinmiyor', inline: true },
-                            { name: 'Bölge', value: data.region || 'Bilinmiyor', inline: true },
                             { name: 'Ülke', value: data.country_name || 'Bilinmiyor', inline: true },
                             { name: 'Saat', value: new Date().toLocaleString('tr-TR'), inline: false }
                         ],
@@ -340,40 +326,31 @@
                 this.speedY = Math.random() * 0.5 + 0.2;
                 this.alpha = Math.random() * 0.5 + 0.2;
             }
-            update() {
-                this.y -= this.speedY;
-                if (this.y < 0) { this.y = canvas.height; this.x = Math.random() * canvas.width; }
-            }
-            draw() {
-                ctx.fillStyle = `rgba(114, 137, 218, ${this.alpha})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
+            update() { this.y -= this.speedY; if (this.y < 0) { this.y = canvas.height; this.x = Math.random() * canvas.width; } }
+            draw() { ctx.fillStyle = `rgba(114, 137, 218, ${this.alpha})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
         }
 
         let particles = [];
         for (let i = 0; i < 70; i++) particles.push(new Particle());
-
-        function animateCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animateCanvas);
-        }
+        function animateCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animateCanvas); }
         animateCanvas();
 
-        // Language Toggle
+        // Language System
         function toggleLanguage() {
             const htmlEl = document.documentElement;
             const langText = document.getElementById('lang-text');
-            if (htmlEl.lang === 'tr') {
-                htmlEl.lang = 'en';
-                langText.textContent = 'EN';
-            } else {
-                htmlEl.lang = 'tr';
-                langText.textContent = 'TR';
-            }
+            const isEnglish = htmlEl.lang === 'en';
+            htmlEl.lang = isEnglish ? 'tr' : 'en';
+            langText.textContent = isEnglish ? 'TR' : 'EN';
+            
+            document.querySelectorAll('.lang-tr').forEach(el => el.classList.toggle('active', !isEnglish));
+            document.querySelectorAll('.lang-en').forEach(el => el.classList.toggle('active', isEnglish));
         }
+        
+        // Set initial language
+        document.querySelectorAll('.lang-en').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.lang-tr').forEach(el => el.classList.add('active'));
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
