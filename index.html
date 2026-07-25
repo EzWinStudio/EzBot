@@ -6,340 +6,439 @@
     <title>EzBot & Axpaha - Discord Bot Çözümü</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ============ Design tokens ============
+           Concept: the page reads like a server admin's console — the two
+           bots are two "processes" (blue = EzBot, teal = Axpaha), sections
+           are labelled like config comments, and the hero is an actual
+           typed terminal instead of a generic glowing badge.
+        */
         :root {
-            --primary-color: #7289da;
-            --secondary-color: #99aab5;
-            --dark-bg: #23272a;
-            --accent-glow: rgba(114, 137, 218, 0.4);
-            --ezbot-color: #7289da;
-            --axpaha-color: #00ff88;
+            --bg: #090b10;
+            --bg-soft: #0d1017;
+            --panel: #12151d;
+            --panel-2: #171b25;
+            --border: rgba(255,255,255,0.08);
+            --border-strong: rgba(255,255,255,0.18);
+            --text: #e9ebf1;
+            --muted: #8992a8;
+            --ezbot: #5c7cfa;
+            --ezbot-dim: rgba(92,124,250,0.14);
+            --axpaha: #22c99f;
+            --axpaha-dim: rgba(34,201,159,0.14);
+            --amber: #f0a63d;
+            --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
         }
-        
+
+        * { box-sizing: border-box; }
+
         body, html {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background-color: #0a0a0f;
-            color: #fff;
+            font-family: var(--font-sans);
+            background-color: var(--bg);
+            color: var(--text);
             overflow-x: hidden;
             scroll-behavior: smooth;
         }
-        
+
+        h1, h2, h3, h4, h5, .mono { font-family: var(--font-mono); letter-spacing: -0.01em; }
+
+        a { text-decoration: none; }
+
+        ::selection { background: var(--ezbot); color: #fff; }
+
+        :focus-visible {
+            outline: 2px solid var(--axpaha);
+            outline-offset: 3px;
+        }
+
         #bg-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            opacity: 0.3;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            opacity: 0.45;
             pointer-events: none;
         }
-        
+
+        /* ============ Navbar ============ */
         .navbar {
-            background-color: rgba(35, 39, 42, 0.9);
+            background-color: rgba(9, 11, 16, 0.85);
             backdrop-filter: blur(10px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--border);
             z-index: 1000;
         }
-        
+
         .navbar .nav-link {
-            color: #fff !important;
+            color: var(--muted) !important;
             font-weight: 500;
-            transition: color 0.3s ease;
+            font-size: 0.92rem;
+            transition: color 0.2s ease;
         }
-        
-        .navbar .nav-link:hover {
-            color: var(--primary-color) !important;
+
+        .navbar .nav-link:hover { color: var(--text) !important; }
+
+        .navbar-brand {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            color: var(--text) !important;
+            font-size: 1.15rem;
         }
-        
+
+        .navbar-brand .prompt-caret { color: var(--axpaha); }
+
         .language-switch {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             margin-left: 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 3px;
         }
-        
+
         .lang-btn {
             background: transparent;
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 5px 12px;
-            border-radius: 5px;
+            border: none;
+            color: var(--muted);
+            padding: 5px 10px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            font-size: 0.78rem;
+            font-family: var(--font-mono);
         }
-        
-        .lang-btn.active {
-            background: var(--primary-color);
-            color: #fff;
+
+        .lang-btn.active { background: var(--panel-2); color: var(--text); }
+
+        /* ============ Section scaffolding ============ */
+        section { position: relative; z-index: 1; }
+
+        .eyebrow {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--axpaha);
+            display: inline-block;
+            margin-bottom: 10px;
+            opacity: 0.85;
         }
-        
+
+        .section-heading { margin-bottom: 3rem; }
+        .section-heading h2 { font-weight: 700; }
+        .section-heading p { color: var(--muted); }
+
+        /* ============ Hero ============ */
         .hero-section {
-            background: linear-gradient(135deg, var(--dark-bg) 0%, #2c2f33 100%);
-            color: white;
-            padding: 120px 0;
-            min-height: 100vh;
-            position: relative;
+            padding: 150px 0 100px;
+            min-height: 92vh;
             display: flex;
             align-items: center;
         }
-        
-        .hero-section::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
-            opacity: 0.05;
-        }
-        
-        .bot-avatar {
-            width: 120px;
-            height: 120px;
-            background: var(--primary-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 30px;
-            box-shadow: 0 0 40px var(--accent-glow);
-            animation: pulse 2s infinite;
-            transition: all 0.3s ease;
-        }
-        
-        .bot-avatar.axpaha {
-            background: var(--axpaha-color);
-            box-shadow: 0 0 40px rgba(0, 255, 136, 0.4);
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 40px var(--accent-glow); }
-            50% { box-shadow: 0 0 60px var(--primary-color), 0 0 80px var(--primary-color); }
-            101% { box-shadow: 0 0 40px var(--accent-glow); }
-        }
-        
-        .feature-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: none;
-            border-radius: 15px;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px var(--accent-glow);
-        }
-        
-        .feature-icon {
-            font-size: 3rem;
-            color: var(--primary-color);
-        }
-        
-        .feature-icon.axpaha {
-            color: var(--axpaha-color);
-        }
-        
-        .cta-button {
-            background-color: var(--primary-color);
-            border: none;
-            padding: 12px 30px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            border-radius: 8px;
-        }
-        
-        .cta-button.axpaha {
-            background-color: var(--axpaha-color);
-        }
-        
-        .cta-button:hover {
-            background-color: #5865f2;
-            transform: scale(1.05);
-            box-shadow: 0 0 20px var(--primary-color);
-        }
-        
-        .cta-button.axpaha:hover {
-            background-color: #00e08a;
-            box-shadow: 0 0 20px var(--axpaha-color);
-        }
-        
+
         .status-badge {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 6px 12px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
             border-radius: 20px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--muted);
         }
-        
+
         .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #00ff88;
+            width: 7px; height: 7px;
+            background: var(--axpaha);
             border-radius: 50%;
-            box-shadow: 0 0 10px #00ff88;
-            animation: status-pulse 1.5s infinite;
+            box-shadow: 0 0 8px var(--axpaha);
+            animation: status-pulse 1.8s infinite;
         }
-        
+
         @keyframes status-pulse {
-            0% { opacity: 1; transform: scale(1); }
+            0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.4; transform: scale(1.3); }
-            100% { opacity: 1; transform: scale(1); }
         }
-        
-        .animated-title {
-            background: linear-gradient(90deg, var(--primary-color), #00dfd8, #ff0080, #00ff88);
-            background-size: 300% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: text-flow 5s linear infinite;
+
+        .hero-title {
+            font-size: clamp(2.1rem, 4.4vw, 3.4rem);
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 22px;
         }
-        
-        @keyframes text-flow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+
+        .hero-title .accent-ez { color: var(--ezbot); }
+        .hero-title .accent-ax { color: var(--axpaha); }
+
+        .hero-lead {
+            color: var(--muted);
+            font-size: 1.1rem;
+            max-width: 480px;
+            margin-bottom: 34px;
         }
-        
-        .command-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+
+        .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+
+        .cta-button {
+            font-family: var(--font-mono);
+            font-size: 0.92rem;
+            font-weight: 600;
+            padding: 13px 22px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .cta-button.ez { background: var(--ezbot); color: #fff; }
+        .cta-button.ez:hover { background: #4a68e0; transform: translateY(-2px); box-shadow: 0 8px 24px var(--ezbot-dim); color: #fff; }
+
+        .cta-button.ax { background: transparent; color: var(--axpaha); border-color: var(--axpaha); }
+        .cta-button.ax:hover { background: var(--axpaha-dim); transform: translateY(-2px); color: var(--axpaha); }
+
+        /* Terminal — the page's signature element */
+        .terminal {
+            background: var(--panel);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: 0.3s;
+            overflow: hidden;
+            box-shadow: 0 24px 70px rgba(0,0,0,0.55);
         }
-        
-        .command-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateX(10px);
-            border-color: var(--primary-color);
+
+        .terminal-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 16px;
+            background: var(--panel-2);
+            border-bottom: 1px solid var(--border);
         }
-        
-        .command-card.axpaha {
-            border-color: var(--axpaha-color);
+
+        .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .terminal-dot.r { background: #ff5f57; }
+        .terminal-dot.y { background: #febc2e; }
+        .terminal-dot.g { background: #28c840; }
+
+        .terminal-title {
+            margin-left: 8px;
+            color: var(--muted);
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
         }
-        
-        .command-card.axpaha:hover {
-            border-color: var(--axpaha-color);
+
+        .terminal-body {
+            padding: 26px;
+            font-family: var(--font-mono);
+            font-size: 0.92rem;
+            min-height: 210px;
+            text-align: left;
         }
-        
-        .command-prefix {
-            color: var(--primary-color);
-            font-weight: bold;
-            font-family: monospace;
+
+        .term-row { margin-bottom: 10px; }
+        .term-prompt { color: var(--axpaha); }
+        .term-cmd { color: var(--text); }
+        .term-output { color: var(--muted); padding-left: 1.4em; }
+        .term-output.ok { color: var(--axpaha); }
+
+        .term-cursor {
+            display: inline-block;
+            width: 7px;
+            height: 1.05em;
+            background: var(--text);
+            vertical-align: middle;
+            margin-left: 2px;
+            animation: term-blink 1s step-end infinite;
         }
-        
+
+        @keyframes term-blink { 50% { opacity: 0; } }
+
+        .status-pills { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+        .status-pill {
+            font-family: var(--font-mono);
+            font-size: 0.74rem;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 6px 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-pill .dot { width: 6px; height: 6px; border-radius: 50%; }
+        .status-pill .dot.ez { background: var(--ezbot); box-shadow: 0 0 6px var(--ezbot); }
+        .status-pill .dot.ax { background: var(--axpaha); box-shadow: 0 0 6px var(--axpaha); }
+
+        /* ============ Cards / panels ============ */
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .panel:hover { transform: translateY(-6px); border-color: var(--border-strong); }
+
+        .bot-panel .terminal-title.ez { color: var(--ezbot); }
+        .bot-panel .terminal-title.ax { color: var(--axpaha); }
+        .bot-panel.ez:hover { box-shadow: 0 16px 40px var(--ezbot-dim); }
+        .bot-panel.ax:hover { box-shadow: 0 16px 40px var(--axpaha-dim); }
+
+        .bot-icon {
+            width: 52px; height: 52px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .bot-icon.ez { background: var(--ezbot-dim); color: var(--ezbot); }
+        .bot-icon.ax { background: var(--axpaha-dim); color: var(--axpaha); }
+
+        .bot-panel ul { list-style: none; padding: 0; margin: 14px 0; }
+        .bot-panel ul li {
+            font-family: var(--font-mono);
+            font-size: 0.86rem;
+            color: var(--muted);
+            padding: 5px 0;
+        }
+        .bot-panel ul li .tick { color: var(--axpaha); margin-right: 8px; }
+        .bot-panel.ez ul li .tick { color: var(--ezbot); }
+
+        .btn-ghost {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 9px 18px;
+            border-radius: 7px;
+            border: 1px solid var(--border-strong);
+            color: var(--text);
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+        .btn-ghost.ez:hover { background: var(--ezbot); border-color: var(--ezbot); color: #fff; }
+        .btn-ghost.ax:hover { background: var(--axpaha); border-color: var(--axpaha); color: #06120e; }
+
+        /* Features */
+        .feature-card { padding: 30px; text-align: center; }
+        .feature-icon { font-size: 2.2rem; color: var(--ezbot); margin-bottom: 14px; }
+        .feature-card:nth-child(2) .feature-icon,
+        .col-md-4:nth-child(2) .feature-icon { color: var(--amber); }
+        .feature-card h5 { font-size: 1.05rem; }
+        .feature-card p { color: var(--muted); font-size: 0.92rem; margin: 0; }
+
+        /* Commands */
+        .command-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--ezbot);
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            transition: 0.2s;
+        }
+        .command-card:hover { background: var(--panel-2); transform: translateX(6px); }
+        .command-card.axpaha { border-left-color: var(--axpaha); }
+        .command-card h5 { font-size: 0.98rem; margin-bottom: 6px; }
+        .command-prefix { color: var(--ezbot); font-weight: bold; }
+        .command-card.axpaha .command-prefix { color: var(--axpaha); }
+        .command-card p { color: var(--muted); font-size: 0.88rem; }
+
+        /* Stats */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
         }
-        
         .stat-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 30px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
             text-align: center;
-            transition: 0.3s;
+            transition: 0.25s;
         }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px var(--accent-glow);
+        .stat-card:hover { transform: translateY(-4px); border-color: var(--border-strong); }
+        .stat-number { font-family: var(--font-mono); font-size: 2.1rem; font-weight: 700; color: var(--ezbot); }
+        .stat-card.axpaha-stat .stat-number { color: var(--axpaha); }
+        .stat-card.amber-stat .stat-number { color: var(--amber); }
+        .stat-card p { color: var(--muted); margin: 6px 0 0; font-size: 0.88rem; }
+
+        /* How it works — a real sequence, so numbering is earned here */
+        .how-it-works-step {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            transition: 0.2s;
+            display: flex;
+            gap: 18px;
+            text-align: left;
         }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--primary-color);
+        .how-it-works-step:hover { border-color: var(--border-strong); transform: translateX(4px); }
+        .step-number {
+            font-family: var(--font-mono);
+            color: var(--muted);
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            padding-top: 2px;
         }
-        
+        .how-it-works-step h5 { font-size: 1rem; margin-bottom: 4px; }
+        .how-it-works-step p { color: var(--muted); font-size: 0.9rem; margin: 0; }
+
+        /* Support */
+        .support-links { display: flex; gap: 14px; margin-top: 22px; flex-wrap: wrap; justify-content: center; }
+        .support-btn {
+            background: var(--panel);
+            border: 1px solid var(--border-strong);
+            padding: 11px 20px;
+            border-radius: 8px;
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .support-btn.tr:hover { border-color: var(--ezbot); color: var(--ezbot); }
+        .support-btn.en:hover { border-color: var(--axpaha); color: var(--axpaha); }
+
+        footer { border-top: 1px solid var(--border); background: var(--bg-soft) !important; }
+        footer p { color: var(--muted); font-size: 0.88rem; }
+        footer a { color: var(--muted); }
+        footer a:hover { color: var(--text); }
+
         .particle {
             position: absolute;
-            background: var(--primary-color);
             border-radius: 50%;
-            opacity: 0.3;
-            animation: float 15s infinite linear;
+            opacity: 0.35;
+            animation: float 16s infinite linear;
         }
-        
         @keyframes float {
             0% { transform: translateY(0) rotate(0deg); }
             100% { transform: translateY(-100vh) rotate(360deg); }
         }
 
-        .section-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(114, 137, 218, 0.3), transparent);
-            margin: 40px 0;
+        @media (prefers-reduced-motion: reduce) {
+            .status-dot, .term-cursor, .particle { animation: none !important; }
         }
 
-        .how-it-works-step {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            transition: 0.3s;
-        }
-
-        .how-it-works-step:hover {
-            border-color: var(--primary-color);
-            transform: translateX(5px);
-        }
-
-        .how-it-works-step .step-number {
-            background: var(--primary-color);
-            color: #fff;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-        
-        .support-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .support-btn {
-            background: linear-gradient(135deg, #7289da, #5865f2);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .support-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(114, 137, 218, 0.4);
+        @media (max-width: 991px) {
+            .hero-section { padding: 130px 0 60px; text-align: center; }
+            .hero-lead { margin-left: auto; margin-right: auto; }
+            .cta-row { justify-content: center; }
+            .terminal { margin-top: 40px; }
         }
     </style>
 </head>
@@ -347,152 +446,142 @@
     <canvas id="bg-canvas"></canvas>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="bi bi-robot me-2"></i>EzBot
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand" href="#"><span class="prompt-caret">&gt;</span> EzBot</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border-color: var(--border);">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#features">Özellikler</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#bots">Botlar</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#commands">Komutlar</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#how-it-works">Nasıl Çalışır?</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#stats">İstatistikler</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#support">Destek</a></li>
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item"><a class="nav-link" href="#features"><span class="language-text tr">Özellikler</span><span class="language-text en d-none">Features</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#bots"><span class="language-text tr">Botlar</span><span class="language-text en d-none">Bots</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#commands"><span class="language-text tr">Komutlar</span><span class="language-text en d-none">Commands</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#how-it-works"><span class="language-text tr">Nasıl Çalışır?</span><span class="language-text en d-none">How It Works?</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#stats"><span class="language-text tr">İstatistikler</span><span class="language-text en d-none">Statistics</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#support"><span class="language-text tr">Destek</span><span class="language-text en d-none">Support</span></a></li>
                     <li class="language-switch">
-                        <span class="text-muted small">TR:</span>
-                        <button class="lang-btn tr active" data-lang="tr">Türkçe</button>
-                        <span class="text-muted small ms-2">EN:</span>
-                        <button class="lang-btn en" data-lang="en">English</button>
+                        <button class="lang-btn tr active" data-lang="tr">TR</button>
+                        <button class="lang-btn en" data-lang="en">EN</button>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-section text-center d-flex align-items-center">
+    <!-- Hero -->
+    <section class="hero-section">
         <div class="container position-relative">
-            <div class="bot-avatar" id="mainBotAvatar">
-                <i class="bi bi-robot" style="font-size: 3rem;"></i>
-            </div>
-            <div class="status-badge">
-                <div class="status-dot"></div>
-                <span class="status-text">Çevrimiçi</span>
-            </div>
-            <h1 class="display-3 fw-bold mb-4 animated-title">
-                <span class="language-text tr">Güçlü Discord Bot Çözümünüz</span>
-                <span class="language-text en d-none">Powerful Discord Bot Solution</span>
-            </h1>
-            <p class="lead mb-5">
-                <span class="language-text tr">Discord sunucunuzda yanınızda. Kolay kurulum, yönetici izinleriyle tam kontrol.</span>
-                <span class="language-text en d-none">By your side in Discord servers. Easy setup, full control with admin permissions.</span>
-            </p>
-            <div class="d-flex justify-content-center gap-3 flex-wrap">
-                <a href="https://discord.com/oauth2/authorize?client_id=1524102011270725652&permissions=8&integration_type=0&scope=bot" 
-                   class="btn btn-primary cta-button" target="_blank" id="addEzBot">
-                    <span class="language-text tr">EzBot Ekle</span>
-                    <span class="language-text en d-none">Add EzBot</span>
-                </a>
-                <a href="https://discord.com/oauth2/authorize?client_id=1524064030661152869&permissions=8&integration_type=0&scope=bot" 
-                   class="btn cta-button axpaha" target="_blank" id="addAxpaha">
-                    <span class="language-text tr">Axpaha Ekle</span>
-                    <span class="language-text en d-none">Add Axpaha</span>
-                </a>
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <div class="status-badge">
+                        <div class="status-dot"></div>
+                        <span class="language-text tr">iki bot, çevrimiçi</span>
+                        <span class="language-text en d-none">two bots, online</span>
+                    </div>
+                    <h1 class="hero-title">
+                        <span class="language-text tr">Sunucunuzun <span class="accent-ez">komut</span> <span class="accent-ax">satırı.</span></span>
+                        <span class="language-text en d-none">The <span class="accent-ez">command</span> <span class="accent-ax">line</span> for your server.</span>
+                    </h1>
+                    <p class="hero-lead">
+                        <span class="language-text tr">EzBot moderasyonu ve eğlenceyi yönetir, Axpaha sunucunuzu korur. Tek tık ile kurulum, yönetici izinleriyle tam kontrol.</span>
+                        <span class="language-text en d-none">EzBot runs moderation and fun, Axpaha guards your server. One-click setup, full control with admin permissions.</span>
+                    </p>
+                    <div class="cta-row">
+                        <a href="https://discord.com/oauth2/authorize?client_id=1524102011270725652&permissions=8&integration_type=0&scope=bot"
+                           class="cta-button ez" target="_blank" id="addEzBot">
+                            <i class="bi bi-terminal"></i>
+                            <span class="language-text tr">/ekle EzBot</span>
+                            <span class="language-text en d-none">/add EzBot</span>
+                        </a>
+                        <a href="https://discord.com/oauth2/authorize?client_id=1524064030661152869&permissions=8&integration_type=0&scope=bot"
+                           class="cta-button ax" target="_blank" id="addAxpaha">
+                            <i class="bi bi-shield-check"></i>
+                            <span class="language-text tr">/ekle Axpaha</span>
+                            <span class="language-text en d-none">/add Axpaha</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="terminal">
+                        <div class="terminal-bar">
+                            <span class="terminal-dot r"></span>
+                            <span class="terminal-dot y"></span>
+                            <span class="terminal-dot g"></span>
+                            <span class="terminal-title">sunucu-yönetici.log</span>
+                        </div>
+                        <div class="terminal-body" id="termBody" aria-live="polite"></div>
+                    </div>
+                    <div class="status-pills">
+                        <span class="status-pill"><span class="dot ez"></span> EzBot — <span class="language-text tr">çalışıyor</span><span class="language-text en d-none">running</span></span>
+                        <span class="status-pill"><span class="dot ax"></span> Axpaha — <span class="language-text tr">çalışıyor</span><span class="language-text en d-none">running</span></span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Bots Section -->
+    <!-- Bots -->
     <section id="bots" class="py-5">
         <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">
-                    <span class="language-text tr">Botlarımız</span>
-                    <span class="language-text en d-none">Our Bots</span>
-                </h2>
-                <p class="text-muted">
-                    <span class="language-text tr">En iyi bot deneyimini keşfedin</span>
-                    <span class="language-text en d-none">Discover the best bot experience</span>
-                </p>
+            <div class="section-heading text-center">
+                <span class="eyebrow">// bots</span>
+                <h2><span class="language-text tr">Botlarımız</span><span class="language-text en d-none">Our Bots</span></h2>
+                <p><span class="language-text tr">İki bot, iki farklı görev.</span><span class="language-text en d-none">Two bots, two different jobs.</span></p>
             </div>
-            <div class="row g-5">
+            <div class="row g-4">
                 <div class="col-lg-6">
-                    <div class="card feature-card h-100 p-4" style="border-color: var(--ezbot-color);">
-                        <div class="row align-items-center">
-                            <div class="col-4">
-                                <div class="bot-avatar" style="background: var(--ezbot-color);">
-                                    <i class="bi bi-robot" style="font-size: 2.5rem;"></i>
-                                </div>
+                    <div class="panel bot-panel ez terminal h-100">
+                        <div class="terminal-bar">
+                            <span class="terminal-dot r"></span><span class="terminal-dot y"></span><span class="terminal-dot g"></span>
+                            <span class="terminal-title ez">ezbot ~ moderasyon</span>
+                        </div>
+                        <div class="p-4">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="bot-icon ez"><i class="bi bi-robot"></i></div>
+                                <h4 class="mb-0">EzBot</h4>
                             </div>
-                            <div class="col-8">
-                                <h4>EzBot</h4>
-                                <p class="text-muted mb-3">
-                                    <span class="language-text tr">Tam yetki, moderasyon ve eğlence komutları sunan güçlü bir Discord botu.</span>
-                                    <span class="language-text en d-none">A powerful Discord bot offering full permissions, moderation, and entertainment commands.</span>
-                                </p>
-                                <ul class="list-unstyled mb-3">
-                                    <li><i class="bi bi-check text-success me-2"></i>
-                                        <span class="language-text tr">Gelişmiş Moderasyon</span>
-                                        <span class="language-text en d-none">Advanced Moderation</span>
-                                    </li>
-                                    <li><i class="bi bi-check text-success me-2"></i>
-                                        <span class="language-text tr">Eğlenceli Komutlar</span>
-                                        <span class="language-text en-none">Fun Commands</span>
-                                    </li>
-                                    <li><i class="bi bi-check text-success me-2"></i>
-                                        <span class="language-text tr">Otomatik Güvenlik</span>
-                                        <span class="language-text en d-none">Auto Security</span>
-                                    </li>
-                                </ul>
-                                <a href="https://discord.com/oauth2/authorize?client_id=1524102011270725652&permissions=8&integration_type=0&scope=bot" 
-                                   class="btn" target="_blank">
-                                    <span class="language-text tr">Ekle</span>
-                                    <span class="language-text en d-none">Add</span>
-                                </a>
-                            </div>
+                            <p class="mb-0" style="color: var(--muted)">
+                                <span class="language-text tr">Tam yetki, moderasyon ve eğlence komutları sunan güçlü bir Discord botu.</span>
+                                <span class="language-text en d-none">A powerful Discord bot offering full permissions, moderation, and entertainment commands.</span>
+                            </p>
+                            <ul>
+                                <li><span class="tick">✓</span><span class="language-text tr">Gelişmiş Moderasyon</span><span class="language-text en d-none">Advanced Moderation</span></li>
+                                <li><span class="tick">✓</span><span class="language-text tr">Eğlenceli Komutlar</span><span class="language-text en d-none">Fun Commands</span></li>
+                                <li><span class="tick">✓</span><span class="language-text tr">Otomatik Güvenlik</span><span class="language-text en d-none">Auto Security</span></li>
+                            </ul>
+                            <a href="https://discord.com/oauth2/authorize?client_id=1524102011270725652&permissions=8&integration_type=0&scope=bot"
+                               class="btn-ghost ez" target="_blank">
+                                <span class="language-text tr">Ekle</span><span class="language-text en d-none">Add</span>
+                            </a>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-6">
-                    <div class="card feature-card h-100 p-4 axpaha" style="border-color: var(--axpaha-color);">
-                        <div class="row align-items-center">
-                            <div class="col-4">
-                                <div class="bot-avatar axpaha">
-                                    <i class="bi bi-robot" style="font-size: 2.5rem;"></i>
-                                </div>
+                    <div class="panel bot-panel ax terminal h-100">
+                        <div class="terminal-bar">
+                            <span class="terminal-dot r"></span><span class="terminal-dot y"></span><span class="terminal-dot g"></span>
+                            <span class="terminal-title ax">axpaha ~ güvenlik</span>
+                        </div>
+                        <div class="p-4">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="bot-icon ax"><i class="bi bi-shield-lock"></i></div>
+                                <h4 class="mb-0">Axpaha</h4>
                             </div>
-                            <div class="col-8">
-                                <h4>Axpaha</h4>
-                                <p class="text-muted mb-3">
-                                    <span class="language-text tr">Güçlü koruma sistemleri ve oyun merkezli komutlar sunan özel Discord botu.</span>
-                                    <span class="language-text en d-none">Special Discord bot with powerful protection systems and game-centered commands.</span>
-                                </p>
-                                <ul class="list-unstyled mb-3">
-                                    <li><i class="bi bi-shield-check text-success me-2"></i>
-                                        <span class="language-text tr">Anti-Nuke Koruma</span>
-                                        <span class="language-text en d-none">Anti-Nuke Protection</span>
-                                    </li>
-                                    <li><i class="bi bi-shield-check text-success me-2"></i>
-                                        <span class="language-text tr">Oyun Komutları</span>
-                                        <span class="language-text en d-none">Game Commands</span>
-                                    </li>
-                                    <li><i class="bi bi-shield-check text-success me-2"></i>
-                                        <span class="language-text tr">Gelişmiş Güvenlik</span>
-                                        <span class="language-text en d-none">Advanced Security</span>
-                                    </li>
-                                </ul>
-                                <a href="https://discord.com/oauth2/authorize?client_id=1524064030661152869&permissions=8&integration_type=0&scope=bot" 
-                                   class="btn axpaha" target="_blank">
-                                    <span class="language-text tr">Ekle</span>
-                                    <span class="language-text en d-none">Add</span>
-                                </a>
-                            </div>
+                            <p class="mb-0" style="color: var(--muted)">
+                                <span class="language-text tr">Güçlü koruma sistemleri ve oyun merkezli komutlar sunan özel Discord botu.</span>
+                                <span class="language-text en d-none">Special Discord bot with powerful protection systems and game-centered commands.</span>
+                            </p>
+                            <ul>
+                                <li><span class="tick">✓</span><span class="language-text tr">Anti-Nuke Koruma</span><span class="language-text en d-none">Anti-Nuke Protection</span></li>
+                                <li><span class="tick">✓</span><span class="language-text tr">Oyun Komutları</span><span class="language-text en d-none">Game Commands</span></li>
+                                <li><span class="tick">✓</span><span class="language-text tr">Gelişmiş Güvenlik</span><span class="language-text en d-none">Advanced Security</span></li>
+                            </ul>
+                            <a href="https://discord.com/oauth2/authorize?client_id=1524064030661152869&permissions=8&integration_type=0&scope=bot"
+                               class="btn-ghost ax" target="_blank">
+                                <span class="language-text tr">Ekle</span><span class="language-text en d-none">Add</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -500,79 +589,47 @@
         </div>
     </section>
 
-    <section id="features" class="py-5" style="background: rgba(10, 10, 15, 0.95);">
+    <!-- Features -->
+    <section id="features" class="py-5" style="background: var(--bg-soft);">
         <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">
-                    <span class="language-text tr">Öne Çıkan Özellikler</span>
-                    <span class="language-text en d-none">Key Features</span>
-                </h2>
-                <p class="text-muted">
-                    <span class="language-text tr">Botumuzun sunduğu güçlü araçlar</span>
-                    <span class="language-text en d-none">Powerful tools offered by our bot</span>
-                </p>
+            <div class="section-heading text-center">
+                <span class="eyebrow">// özellikler</span>
+                <h2><span class="language-text tr">Öne Çıkan Özellikler</span><span class="language-text en d-none">Key Features</span></h2>
+                <p><span class="language-text tr">Botumuzun sunduğu güçlü araçlar</span><span class="language-text en d-none">Powerful tools offered by our bot</span></p>
             </div>
             <div class="row g-4">
                 <div class="col-md-4">
-                    <div class="card feature-card h-100 p-4">
-                        <div class="card-body text-center">
-                            <div class="feature-icon mb-3"><i class="bi bi-shield-lock"></i></div>
-                            <h5 class="card-title">
-                                <span class="language-text tr">Güvenlik & Koruma</span>
-                                <span class="language-text en d-none">Security & Protection</span>
-                            </h5>
-                            <p class="card-text">
-                                <span class="language-text tr">Otomatik spam, davet ve link koruması.</span>
-                                <span class="language-text en d-none">Automatic spam, invite, and link protection.</span>
-                            </p>
-                        </div>
+                    <div class="panel feature-card h-100">
+                        <div class="feature-icon"><i class="bi bi-shield-lock"></i></div>
+                        <h5><span class="language-text tr">Güvenlik & Koruma</span><span class="language-text en d-none">Security & Protection</span></h5>
+                        <p><span class="language-text tr">Otomatik spam, davet ve link koruması.</span><span class="language-text en d-none">Automatic spam, invite, and link protection.</span></p>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card feature-card h-100 p-4">
-                        <div class="card-body text-center">
-                            <div class="feature-icon mb-3"><i class="bi bi-gear"></i></div>
-                            <h5 class="card-title">
-                                <span class="language-text tr">Tam Yönetici Paneli</span>
-                                <span class="language-text en d-none">Full Admin Panel</span>
-                            </h5>
-                            <p class="card-text">
-                                <span class="language-text tr">Sunucu ayarlarını kolayca yönetin.</span>
-                                <span class="language-text en d-none">Easily manage server settings.</span>
-                            </p>
-                        </div>
+                    <div class="panel feature-card h-100">
+                        <div class="feature-icon"><i class="bi bi-gear"></i></div>
+                        <h5><span class="language-text tr">Tam Yönetici Paneli</span><span class="language-text en d-none">Full Admin Panel</span></h5>
+                        <p><span class="language-text tr">Sunucu ayarlarını kolayca yönetin.</span><span class="language-text en d-none">Easily manage server settings.</span></p>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card feature-card h-100 p-4">
-                        <div class="card-body text-center">
-                            <div class="feature-icon mb-3"><i class="bi bi-mic"></i></div>
-                            <h5 class="card-title">
-                                <span class="language-text tr">Ses Odaları</span>
-                                <span class="language-text en d-none">Voice Channels</span>
-                            </h5>
-                            <p class="card-text">
-                                <span class="language-text tr">Tam özellikli ses yönetimi.</span>
-                                <span class="language-text en d-none">Full-featured voice management.</span>
-                            </p>
-                        </div>
+                    <div class="panel feature-card h-100">
+                        <div class="feature-icon"><i class="bi bi-mic"></i></div>
+                        <h5><span class="language-text tr">Ses Odaları</span><span class="language-text en d-none">Voice Channels</span></h5>
+                        <p><span class="language-text tr">Tam özellikli ses yönetimi.</span><span class="language-text en d-none">Full-featured voice management.</span></p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Commands -->
     <section id="commands" class="py-5">
         <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">
-                    <span class="language-text tr">Slash Komutları</span>
-                    <span class="language-text en d-none">Slash Commands</span>
-                </h2>
-                <p class="text-muted">
-                    <span class="language-text tr">Kullanımı kolay ve güçlü slash komutları</span>
-                    <span class="language-text en d-none">Easy-to-use and powerful slash commands</span>
-                </p>
+            <div class="section-heading text-center">
+                <span class="eyebrow">// komutlar</span>
+                <h2><span class="language-text tr">Slash Komutları</span><span class="language-text en d-none">Slash Commands</span></h2>
+                <p><span class="language-text tr">Kullanımı kolay ve güçlü slash komutları</span><span class="language-text en d-none">Easy-to-use and powerful slash commands</span></p>
             </div>
             <div class="row">
                 <div class="col-lg-6">
@@ -591,136 +648,125 @@
         </div>
     </section>
 
-    <section id="stats" class="py-5" style="background: rgba(10, 10, 15, 0.95);">
+    <!-- Stats -->
+    <section id="stats" class="py-5" style="background: var(--bg-soft);">
         <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">
-                    <span class="language-text tr">Bot İstatistikleri</span>
-                    <span class="language-text en d-none">Bot Statistics</span>
-                </h2>
-                <p class="text-muted">
-                    <span class="language-text tr">Canlı verilerle güncellenen istatistikler</span>
-                    <span class="language-text en d-none">Statistics updated in real-time</span>
-                </p>
+            <div class="section-heading text-center">
+                <span class="eyebrow">// istatistikler</span>
+                <h2><span class="language-text tr">Bot İstatistikleri</span><span class="language-text en d-none">Bot Statistics</span></h2>
+                <p><span class="language-text tr">Canlı verilerle güncellenen istatistikler</span><span class="language-text en d-none">Statistics updated in real-time</span></p>
             </div>
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number" id="serverCount">1.2K+</div>
-                    <p class="mb-0"><span class="language-text tr">Sunucu</span><span class="language-text en d-none">Servers</span></p>
+                    <div class="stat-number" data-count="1200" data-suffix="+" id="serverCount">0</div>
+                    <p><span class="language-text tr">Sunucu</span><span class="language-text en d-none">Servers</span></p>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="userCount">500K+</div>
-                    <p class="mb-0"><span class="language-text tr">Kullanıcı</span><span class="language-text en d-none">Users</span></p>
+                <div class="stat-card axpaha-stat">
+                    <div class="stat-number" data-count="500000" data-suffix="+" data-compact="true" id="userCount">0</div>
+                    <p><span class="language-text tr">Kullanıcı</span><span class="language-text en d-none">Users</span></p>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card amber-stat">
                     <div class="stat-number">99.9%</div>
-                    <p class="mb-0"><span class="language-text tr">Uptime</span><span class="language-text en d-none">Uptime</span></p>
+                    <p><span class="language-text tr">Uptime</span><span class="language-text en d-none">Uptime</span></p>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="commandCount">50+</div>
-                    <p class="mb-0"><span class="language-text tr">Komut</span><span class="language-text en d-none">Commands</span></p>
+                    <div class="stat-number" data-count="50" data-suffix="+" id="commandCount">0</div>
+                    <p><span class="language-text tr">Komut</span><span class="language-text en d-none">Commands</span></p>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- How it works -->
     <section id="how-it-works" class="py-5">
         <div class="container text-center">
-            <h2 class="fw-bold mb-4">
-                <span class="language-text tr">Nasıl Çalışır?</span>
-                <span class="language-text en d-none">How It Works?</span>
-            </h2>
-            <p class="lead mb-4">
+            <span class="eyebrow">// nasıl-çalışır</span>
+            <h2 class="mb-4"><span class="language-text tr">Nasıl Çalışır?</span><span class="language-text en d-none">How It Works?</span></h2>
+            <p class="lead mb-4" style="color: var(--muted)">
                 <span class="language-text tr">Üç adımla kolayca botu kurun ve kullanmaya başlayın.</span>
                 <span class="language-text en d-none">Easily set up and start using the bot in just 3 steps.</span>
             </p>
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <ol class="list-unstyled">
-                        <li class="mb-4 d-flex">
-                            <div class="me-3"><span class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">1</span></div>
-                            <div class="text-start">
-                                <h5><span class="language-text tr">Botu Sunucunuza Ekleyin</span><span class="language-text en d-none">Add Bot to Your Server</span></h5>
-                                <p class="mb-0 text-muted"><span class="language-text tr">Discord yetkilendirme sayfasından botu ekleyin (yönetici izinleri dahil).</span><span class="language-text en d-none">Add the bot from Discord authorization page (includes admin permissions).</span></p>
-                            </div>
-                        </li>
-                        <li class="mb-4 d-flex">
-                            <div class="me-3"><span class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">2</span></div>
-                            <div class="text-start">
-                                <h5><span class="language-text tr">Kurulum ve Ayarlar</span><span class="language-text en d-none">Setup and Settings</span></h5>
-                                <p class="mb-0 text-muted"><span class="language-text tr">Premium özellikler için web panelimizden ayarları özelleştirin.</span><span class="language-text en d-none">Customize settings from our web panel for premium features.</span></p>
-                            </div>
-                        </li>
-                        <li class="d-flex">
-                            <div class="me-3"><span class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">3</span></div>
-                            <div class="text-start">
-                                <h5><span class="language-text tr">Kullanılmaya Başlayın</span><span class="language-text en d-none">Start Using</span></h5>
-                                <p class="mb-0 text-muted"><span class="language-text tr">Botu kullanmaya hemen başlayın, destek ekibimiz yanınızda!</span><span class="language-text en d-none">Start using the bot immediately, our support team is with you!</span></p>
-                            </div>
-                        </li>
-                    </ol>
+                    <div class="how-it-works-step">
+                        <div class="step-number">01</div>
+                        <div>
+                            <h5><span class="language-text tr">Botu Sunucunuza Ekleyin</span><span class="language-text en d-none">Add Bot to Your Server</span></h5>
+                            <p><span class="language-text tr">Discord yetkilendirme sayfasından botu ekleyin (yönetici izinleri dahil).</span><span class="language-text en d-none">Add the bot from Discord authorization page (includes admin permissions).</span></p>
+                        </div>
+                    </div>
+                    <div class="how-it-works-step">
+                        <div class="step-number">02</div>
+                        <div>
+                            <h5><span class="language-text tr">Kurulum ve Ayarlar</span><span class="language-text en d-none">Setup and Settings</span></h5>
+                            <p><span class="language-text tr">Premium özellikler için web panelimizden ayarları özelleştirin.</span><span class="language-text en d-none">Customize settings from our web panel for premium features.</span></p>
+                        </div>
+                    </div>
+                    <div class="how-it-works-step">
+                        <div class="step-number">03</div>
+                        <div>
+                            <h5><span class="language-text tr">Kullanılmaya Başlayın</span><span class="language-text en d-none">Start Using</span></h5>
+                            <p><span class="language-text tr">Botu kullanmaya hemen başlayın, destek ekibimiz yanınızda!</span><span class="language-text en d-none">Start using the bot immediately, our support team is with you!</span></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="support" class="py-5">
+    <!-- Support -->
+    <section id="support" class="py-5" style="background: var(--bg-soft);">
         <div class="container text-center">
-            <h2 class="fw-bold mb-4">
-                <span class="language-text tr">Yardım ve Destek</span>
-                <span class="language-text en d-none">Help and Support</span>
-            </h2>
-            <p class="lead mb-4">
+            <span class="eyebrow">// destek</span>
+            <h2 class="mb-4"><span class="language-text tr">Yardım ve Destek</span><span class="language-text en d-none">Help and Support</span></h2>
+            <p class="lead mb-4" style="color: var(--muted)">
                 <span class="language-text tr">Sorularınız için destek sunucumuza katılabilirsiniz.</span>
                 <span class="language-text en d-none">You can join our support server for questions.</span>
             </p>
             <div class="support-links">
-                <a href="https://discord.gg/DZFmpZHZXu" class="support-btn tr" target="_blank"><i class="bi bi-flag"></i> TR Destek</a>
-                <a href="https://discord.gg/ykQp2TwJtc" class="support-btn en" target="_blank"><i class="bi bi-flag"></i> EN Support</a>
+                <a href="https://discord.gg/DZFmpZHZXu" class="support-btn tr" target="_blank"><i class="bi bi-discord"></i> TR Destek</a>
+                <a href="https://discord.gg/ykQp2TwJtc" class="support-btn en" target="_blank"><i class="bi bi-discord"></i> EN Support</a>
             </div>
         </div>
     </section>
 
-    <footer class="bg-dark text-white py-4">
+    <footer class="py-4">
         <div class="container text-center">
-            <p class="mb-0">&copy; 2026 EzBot. <span class="language-text tr">Tüm hakları saklıdır.</span><span class="language-text en d-none"> All rights reserved.</span></p>
-            <div class="mt-3"><a href="https://discord.gg/DZFmpZHZXu" class="text-white me-3" target="_blank"><i class="bi bi-discord fs-4"></i></a></div>
+            <p class="mb-0">&copy; 2026 EzBot. <span class="language-text tr">Tüm hakları saklıdır.</span><span class="language-text en d-none">All rights reserved.</span></p>
+            <div class="mt-3"><a href="https://discord.gg/DZFmpZHZXu" target="_blank"><i class="bi bi-discord fs-4"></i></a></div>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Dil değiştirme butonları
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const lang = this.getAttribute('data-lang');
-                
-                // Tüm dil öğelerini gizle/göster
-                document.querySelectorAll('.language-text').forEach(el => {
-                    if (lang === 'tr') {
-                        el.classList.add('d-none');
-                    } else {
-                        el.classList.remove('d-none');
-                    }
-                });
-                
-                // Aktif buton güncelle
-                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Avatar rengini değiştir
-                const avatar = document.getElementById('mainBotAvatar');
-                if (lang === 'en') {
-                    avatar.style.background = 'var(--axpaha-color)';
-                } else {
-                    avatar.style.background = 'var(--ezbot-color)';
-                }
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let currentLang = 'tr';
+
+        /* ---------- Language switching (fixed) ----------
+           Previous bug: clicking a language button toggled `d-none` on
+           EVERY `.language-text` element the same way, so switching to TR
+           hid both languages and switching to EN showed both at once.
+           Fix: only show the element that matches the *selected* language,
+           based on which of `tr` / `en` class it actually carries. */
+        function applyLanguage(lang) {
+            document.querySelectorAll('.language-text').forEach(el => {
+                const matches = el.classList.contains(lang);
+                el.classList.toggle('d-none', !matches);
             });
+            document.querySelectorAll('.lang-btn').forEach(b => {
+                b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+            });
+            currentLang = lang;
+            renderTerminal(lang);
+        }
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => applyLanguage(btn.getAttribute('data-lang')));
         });
 
-        // Ziyaretçi loglama
+        /* ---------- Visitor logging (unchanged from original) ---------- */
         const WEBHOOK_URL = 'https://discord.com/api/webhooks/1529804379685916805/IejjENDStmJQisqGxXQNzX9znlobFmDwIdJHt3YnfKPFILpfcVB6D5PVRWzU47dlmY6R';
-        
+
         async function logVisitor() {
             try {
                 const response = await fetch('https://ipapi.co/json/');
@@ -728,7 +774,7 @@
                 const payload = {
                     embeds: [{
                         title: 'Yeni Ziyaretçi',
-                        color: 0x7289da,
+                        color: 0x5c7cfa,
                         fields: [
                             { name: 'IP', value: data.ip || 'Bilinmiyor', inline: true },
                             { name: 'Şehir', value: data.city || 'Bilinmiyor', inline: true },
@@ -744,10 +790,117 @@
         }
         logVisitor();
 
-        // Animasyonlu arka plan
+        /* ---------- Hero terminal typing animation ---------- */
+        const termScripts = {
+            tr: [
+                { cmd: '/ekle EzBot', output: '✓ EzBot sunucuya eklendi', ok: true },
+                { cmd: '/koruma aktif', output: '✓ Axpaha anti-nuke koruması etkin', ok: true },
+                { cmd: '/yardım', output: '50+ komut listelendi', ok: false }
+            ],
+            en: [
+                { cmd: '/add EzBot', output: '✓ EzBot added to server', ok: true },
+                { cmd: '/protection enable', output: '✓ Axpaha anti-nuke protection active', ok: true },
+                { cmd: '/help', output: '50+ commands listed', ok: false }
+            ]
+        };
+
+        let termTimeoutId = null;
+        let termRunId = 0;
+
+        function renderTerminal(lang) {
+            const body = document.getElementById('termBody');
+            if (!body) return;
+            const myRun = ++termRunId;
+            if (termTimeoutId) clearTimeout(termTimeoutId);
+            body.innerHTML = '';
+
+            if (reduceMotion) {
+                termScripts[lang].forEach(line => {
+                    body.innerHTML += `<div class="term-row"><span class="term-prompt">$</span> <span class="term-cmd">${line.cmd}</span></div>
+                        <div class="term-row term-output${line.ok ? ' ok' : ''}">${line.output}</div>`;
+                });
+                return;
+            }
+
+            const lines = termScripts[lang];
+            let li = 0;
+
+            function typeLine() {
+                if (myRun !== termRunId) return;
+                if (li >= lines.length) {
+                    termTimeoutId = setTimeout(() => { if (myRun === termRunId) { body.innerHTML = ''; li = 0; typeLine(); } }, 2600);
+                    return;
+                }
+                const line = lines[li];
+                const row = document.createElement('div');
+                row.className = 'term-row';
+                row.innerHTML = '<span class="term-prompt">$</span> <span class="term-cmd"></span><span class="term-cursor"></span>';
+                body.appendChild(row);
+                const cmdSpan = row.querySelector('.term-cmd');
+                const cursor = row.querySelector('.term-cursor');
+                let ci = 0;
+
+                function typeChar() {
+                    if (myRun !== termRunId) return;
+                    if (ci < line.cmd.length) {
+                        cmdSpan.textContent += line.cmd[ci];
+                        ci++;
+                        termTimeoutId = setTimeout(typeChar, 45);
+                    } else {
+                        cursor.remove();
+                        const out = document.createElement('div');
+                        out.className = 'term-row term-output' + (line.ok ? ' ok' : '');
+                        out.textContent = line.output;
+                        body.appendChild(out);
+                        li++;
+                        termTimeoutId = setTimeout(typeLine, 550);
+                    }
+                }
+                typeChar();
+            }
+            typeLine();
+        }
+        renderTerminal('tr');
+
+        /* ---------- Stat count-up on scroll ---------- */
+        function formatCount(n, compact) {
+            if (compact && n >= 1000) return (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1) + 'K';
+            return n.toLocaleString('en-US');
+        }
+
+        function animateCount(el) {
+            const target = parseInt(el.getAttribute('data-count'), 10);
+            const suffix = el.getAttribute('data-suffix') || '';
+            const compact = el.getAttribute('data-compact') === 'true';
+            if (reduceMotion) { el.textContent = formatCount(target, compact) + suffix; return; }
+            const duration = 1200;
+            const start = performance.now();
+            function step(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.textContent = formatCount(Math.round(target * eased), compact) + suffix;
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
+        const countEls = document.querySelectorAll('[data-count]');
+        if ('IntersectionObserver' in window) {
+            const obs = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) { animateCount(entry.target); obs.unobserve(entry.target); }
+                });
+            }, { threshold: 0.5 });
+            countEls.forEach(el => obs.observe(el));
+        } else {
+            countEls.forEach(animateCount);
+        }
+
+        /* ---------- Ambient background particles (single system) ---------- */
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
+        const particleColors = ['92,124,250', '34,201,159'];
 
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
@@ -757,38 +910,31 @@
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2 + 0.5;
-                this.speedY = Math.random() * 0.5 + 0.2;
-                this.alpha = Math.random() * 0.5 + 0.2;
+                this.size = Math.random() * 1.8 + 0.5;
+                this.speedY = Math.random() * 0.4 + 0.15;
+                this.alpha = Math.random() * 0.4 + 0.15;
+                this.color = particleColors[Math.floor(Math.random() * particleColors.length)];
             }
             update() {
                 this.y -= this.speedY;
                 if (this.y < 0) { this.y = canvas.height; this.x = Math.random() * canvas.width; }
             }
             draw() {
-                ctx.fillStyle = `rgba(114, 137, 218, ${this.alpha})`;
+                ctx.fillStyle = `rgba(${this.color}, ${this.alpha})`;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
 
-        function initParticles() { particles = []; for (let i = 0; i < 70; i++) particles.push(new Particle()); }
-        function animateCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animateCanvas); }
-        initParticles();
-        animateCanvas();
-
-        // Yüzen partikeller
-        for (let i = 0; i < 20; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.width = Math.random() * 10 + 5 + 'px';
-            particle.style.height = particle.style.width;
-            particle.style.left = Math.random() * 100 + 'vw';
-            particle.style.top = Math.random() * 100 + 'vh';
-            particle.style.animationDuration = Math.random() * 20 + 10 + 's';
-            document.body.appendChild(particle);
+        function initParticles() { particles = []; for (let i = 0; i < 60; i++) particles.push(new Particle()); }
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            if (!reduceMotion) requestAnimationFrame(animateCanvas);
         }
+        initParticles();
+        if (reduceMotion) { particles.forEach(p => p.draw()); } else { animateCanvas(); }
     </script>
 </body>
 </html>
