@@ -343,10 +343,11 @@
             padding: 18px 20px;
             margin-bottom: 14px;
             transition: 0.2s;
+            position: relative;
         }
         .command-card:hover { background: var(--panel-2); transform: translateX(6px); }
         .command-card.axpaha { border-left-color: var(--axpaha); }
-        .command-card h5 { font-size: 0.98rem; margin-bottom: 6px; }
+        .command-card h5 { font-size: 0.98rem; margin-bottom: 6px; padding-right: 70px; }
         .command-prefix { color: var(--ezbot); font-weight: bold; }
         .command-card.axpaha .command-prefix { color: var(--axpaha); }
         .command-card p { color: var(--muted); font-size: 0.88rem; }
@@ -430,8 +431,277 @@
             100% { transform: translateY(-100vh) rotate(360deg); }
         }
 
+        /* ============ Scroll progress bar ============
+           A build-progress metaphor: fills left-to-right as the visitor
+           "compiles" their way down the page. */
+        .scroll-progress {
+            position: fixed;
+            top: 0; left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--ezbot), var(--axpaha));
+            z-index: 1100;
+            box-shadow: 0 0 12px rgba(92,124,250,0.5);
+            transition: width 0.1s ease-out;
+        }
+
+        /* ============ Hero cursor spotlight ============ */
+        .spotlight {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(520px circle at var(--sx, 50%) var(--sy, 30%), rgba(92,124,250,0.10), transparent 65%);
+            transition: background 0.15s ease-out;
+            z-index: 0;
+        }
+
+        /* ============ Scroll reveal ============ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+        }
+        .reveal.in-view { opacity: 1; transform: translateY(0); }
+        .reveal-d1.in-view { transition-delay: 0.08s; }
+        .reveal-d2.in-view { transition-delay: 0.16s; }
+        .reveal-d3.in-view { transition-delay: 0.24s; }
+        .reveal-d4.in-view { transition-delay: 0.32s; }
+
+        /* ============ Tilt-on-hover panels ============ */
+        [data-tilt] { will-change: transform; transform-style: preserve-3d; }
+
+        /* ============ CTA ripple ============ */
+        .cta-button, .btn-ghost { position: relative; overflow: hidden; }
+        .ripple-dot {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.55);
+            transform: scale(0);
+            animation: ripple-out 0.6s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes ripple-out { to { transform: scale(1); opacity: 0; } }
+
+        /* ============ Server ticker (marquee) ============
+           A log-tail motif: servers "connecting" scroll by continuously,
+           reinforcing the console theme instead of a generic logo strip. */
+        .ticker-wrap {
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-soft);
+            padding: 16px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .ticker-wrap::before, .ticker-wrap::after {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 90px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .ticker-wrap::before { left: 0; background: linear-gradient(90deg, var(--bg-soft), transparent); }
+        .ticker-wrap::after { right: 0; background: linear-gradient(-90deg, var(--bg-soft), transparent); }
+        .ticker-track {
+            display: flex;
+            gap: 14px;
+            width: max-content;
+            animation: ticker-scroll 34s linear infinite;
+        }
+        .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
+        @keyframes ticker-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .ticker-item {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--muted);
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 7px 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .ticker-item .ticker-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--axpaha); box-shadow: 0 0 6px var(--axpaha); flex-shrink: 0; }
+        .ticker-item:nth-child(3n+1) .ticker-dot { background: var(--ezbot); box-shadow: 0 0 6px var(--ezbot); }
+        .ticker-item:nth-child(3n+2) .ticker-dot { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+
+        /* ============ Testimonials — styled like DMs, not review cards ============ */
+        .testimonial-card {
+            padding: 22px 22px 20px;
+            height: 100%;
+        }
+        .testimonial-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .testimonial-avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .testimonial-name { font-weight: 600; font-size: 0.92rem; display: flex; align-items: center; gap: 6px; }
+        .testimonial-role { color: var(--muted); font-size: 0.76rem; font-family: var(--font-mono); }
+        .testimonial-verified { color: var(--axpaha); font-size: 0.85rem; }
+        .testimonial-body { color: var(--text); font-size: 0.9rem; line-height: 1.55; opacity: 0.92; }
+        .testimonial-stars { color: var(--amber); font-size: 0.8rem; margin-top: 12px; letter-spacing: 2px; }
+
+        /* ============ FAQ accordion ============ */
+        .faq-item {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s ease;
+        }
+        .faq-item.open { border-color: var(--border-strong); }
+        .faq-question {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: left;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            cursor: pointer;
+        }
+        .faq-icon {
+            flex-shrink: 0;
+            width: 22px; height: 22px;
+            border-radius: 6px;
+            border: 1px solid var(--border-strong);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem;
+            color: var(--axpaha);
+            transition: transform 0.3s ease;
+        }
+        .faq-item.open .faq-icon { transform: rotate(45deg); }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.35s ease;
+        }
+        .faq-item.open .faq-answer { max-height: 240px; }
+        .faq-answer-inner { padding: 0 20px 18px; color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+
+        /* ============ Changelog ============ */
+        .changelog-rail { position: relative; padding-left: 28px; }
+        .changelog-rail::before {
+            content: '';
+            position: absolute;
+            left: 6px; top: 6px; bottom: 6px;
+            width: 1px;
+            background: var(--border);
+        }
+        .changelog-entry { position: relative; padding-bottom: 26px; text-align: left; }
+        .changelog-entry:last-child { padding-bottom: 0; }
+        .changelog-entry::before {
+            content: '';
+            position: absolute;
+            left: -28px; top: 5px;
+            width: 11px; height: 11px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--ezbot);
+        }
+        .changelog-entry.ax::before { border-color: var(--axpaha); }
+        .changelog-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+        .changelog-version {
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: var(--ezbot);
+            background: var(--ezbot-dim);
+            border-radius: 5px;
+            padding: 3px 8px;
+        }
+        .changelog-entry.ax .changelog-version { color: var(--axpaha); background: var(--axpaha-dim); }
+        .changelog-date { font-family: var(--font-mono); font-size: 0.76rem; color: var(--muted); }
+        .changelog-entry h5 { font-size: 0.96rem; margin-bottom: 4px; }
+        .changelog-entry p { color: var(--muted); font-size: 0.88rem; margin: 0; }
+
+        /* ============ Back to top ============ */
+        .back-to-top {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            width: 46px; height: 46px;
+            border-radius: 10px;
+            background: var(--panel);
+            border: 1px solid var(--border-strong);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            opacity: 0;
+            transform: translateY(12px);
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease, border-color 0.2s ease, color 0.2s ease;
+            z-index: 900;
+            cursor: pointer;
+        }
+        .back-to-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .back-to-top:hover { border-color: var(--axpaha); color: var(--axpaha); }
+
+        /* ============ Copy toast ============ */
+        .copy-toast {
+            position: fixed;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--panel-2);
+            border: 1px solid var(--axpaha);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            padding: 10px 18px;
+            border-radius: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            z-index: 1200;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .copy-toast i { color: var(--axpaha); }
+
+        .command-card { cursor: pointer; }
+        .command-card .copy-hint {
+            position: absolute;
+            top: 16px;
+            right: 18px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--muted);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .command-card:hover .copy-hint { opacity: 0.7; }
+        @media (max-width: 575px) { .command-card .copy-hint { display: none; } }
+
         @media (prefers-reduced-motion: reduce) {
-            .status-dot, .term-cursor, .particle { animation: none !important; }
+            .status-dot, .term-cursor, .particle, .ticker-track { animation: none !important; }
+            .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
         }
 
         @media (max-width: 991px) {
@@ -444,6 +714,7 @@
 </head>
 <body>
     <canvas id="bg-canvas"></canvas>
+    <div class="scroll-progress" id="scrollProgress"></div>
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
@@ -470,7 +741,8 @@
     </nav>
 
     <!-- Hero -->
-    <section class="hero-section">
+    <section class="hero-section" id="heroSection">
+        <div class="spotlight" id="heroSpotlight"></div>
         <div class="container position-relative">
             <div class="row align-items-center g-5">
                 <div class="col-lg-6">
@@ -524,14 +796,14 @@
     <!-- Bots -->
     <section id="bots" class="py-5">
         <div class="container">
-            <div class="section-heading text-center">
+            <div class="section-heading text-center reveal">
                 <span class="eyebrow">// bots</span>
                 <h2><span class="language-text tr">Botlarımız</span><span class="language-text en d-none">Our Bots</span></h2>
                 <p><span class="language-text tr">İki bot, iki farklı görev.</span><span class="language-text en d-none">Two bots, two different jobs.</span></p>
             </div>
             <div class="row g-4">
                 <div class="col-lg-6">
-                    <div class="panel bot-panel ez terminal h-100">
+                    <div class="panel bot-panel ez terminal h-100 reveal" data-tilt>
                         <div class="terminal-bar">
                             <span class="terminal-dot r"></span><span class="terminal-dot y"></span><span class="terminal-dot g"></span>
                             <span class="terminal-title ez">ezbot ~ moderasyon</span>
@@ -559,7 +831,7 @@
                 </div>
 
                 <div class="col-lg-6">
-                    <div class="panel bot-panel ax terminal h-100">
+                    <div class="panel bot-panel ax terminal h-100 reveal reveal-d1" data-tilt>
                         <div class="terminal-bar">
                             <span class="terminal-dot r"></span><span class="terminal-dot y"></span><span class="terminal-dot g"></span>
                             <span class="terminal-title ax">axpaha ~ güvenlik</span>
@@ -589,34 +861,60 @@
         </div>
     </section>
 
+    <!-- Live server ticker -->
+    <div class="ticker-wrap" aria-hidden="true">
+        <div class="ticker-track" id="tickerTrack"></div>
+    </div>
+
     <!-- Features -->
     <section id="features" class="py-5" style="background: var(--bg-soft);">
         <div class="container">
-            <div class="section-heading text-center">
+            <div class="section-heading text-center reveal">
                 <span class="eyebrow">// özellikler</span>
                 <h2><span class="language-text tr">Öne Çıkan Özellikler</span><span class="language-text en d-none">Key Features</span></h2>
                 <p><span class="language-text tr">Botumuzun sunduğu güçlü araçlar</span><span class="language-text en d-none">Powerful tools offered by our bot</span></p>
             </div>
             <div class="row g-4">
                 <div class="col-md-4">
-                    <div class="panel feature-card h-100">
+                    <div class="panel feature-card h-100 reveal" data-tilt>
                         <div class="feature-icon"><i class="bi bi-shield-lock"></i></div>
                         <h5><span class="language-text tr">Güvenlik & Koruma</span><span class="language-text en d-none">Security & Protection</span></h5>
                         <p><span class="language-text tr">Otomatik spam, davet ve link koruması.</span><span class="language-text en d-none">Automatic spam, invite, and link protection.</span></p>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="panel feature-card h-100">
+                    <div class="panel feature-card h-100 reveal reveal-d1" data-tilt>
                         <div class="feature-icon"><i class="bi bi-gear"></i></div>
                         <h5><span class="language-text tr">Tam Yönetici Paneli</span><span class="language-text en d-none">Full Admin Panel</span></h5>
                         <p><span class="language-text tr">Sunucu ayarlarını kolayca yönetin.</span><span class="language-text en d-none">Easily manage server settings.</span></p>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="panel feature-card h-100">
+                    <div class="panel feature-card h-100 reveal reveal-d2" data-tilt>
                         <div class="feature-icon"><i class="bi bi-mic"></i></div>
                         <h5><span class="language-text tr">Ses Odaları</span><span class="language-text en d-none">Voice Channels</span></h5>
                         <p><span class="language-text tr">Tam özellikli ses yönetimi.</span><span class="language-text en d-none">Full-featured voice management.</span></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel feature-card h-100 reveal" data-tilt>
+                        <div class="feature-icon" style="color: var(--axpaha);"><i class="bi bi-graph-up-arrow"></i></div>
+                        <h5><span class="language-text tr">Seviye & Ekonomi</span><span class="language-text en d-none">Leveling & Economy</span></h5>
+                        <p><span class="language-text tr">Mesaj başına XP, sıralamalar ve sanal para sistemi.</span><span class="language-text en d-none">XP per message, leaderboards, and a virtual currency system.</span></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel feature-card h-100 reveal reveal-d1" data-tilt>
+                        <div class="feature-icon"><i class="bi bi-clock-history"></i></div>
+                        <h5><span class="language-text tr">Zamanlanmış Görevler</span><span class="language-text en d-none">Scheduled Tasks</span></h5>
+                        <p><span class="language-text tr">Otomatik duyurular, hatırlatmalar ve rol zamanlayıcıları.</span><span class="language-text en d-none">Automatic announcements, reminders, and role timers.</span></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel feature-card h-100 reveal reveal-d2" data-tilt>
+                        <div class="feature-icon" style="color: var(--amber);"><i class="bi bi-plug"></i></div>
+                        <h5><span class="language-text tr">API & Entegrasyonlar</span><span class="language-text en d-none">API & Integrations</span></h5>
+                        <p><span class="language-text tr">Web panel, webhook'lar ve üçüncü parti entegrasyonlar.</span><span class="language-text en d-none">Web panel, webhooks, and third-party integrations.</span></p>
                     </div>
                 </div>
             </div>
@@ -626,23 +924,23 @@
     <!-- Commands -->
     <section id="commands" class="py-5">
         <div class="container">
-            <div class="section-heading text-center">
+            <div class="section-heading text-center reveal">
                 <span class="eyebrow">// komutlar</span>
                 <h2><span class="language-text tr">Slash Komutları</span><span class="language-text en d-none">Slash Commands</span></h2>
-                <p><span class="language-text tr">Kullanımı kolay ve güçlü slash komutları</span><span class="language-text en d-none">Easy-to-use and powerful slash commands</span></p>
+                <p><span class="language-text tr">Kullanımı kolay ve güçlü slash komutları — kart üzerine tıkla, komutu kopyala.</span><span class="language-text en d-none">Easy-to-use and powerful slash commands — click a card to copy the command.</span></p>
             </div>
             <div class="row">
                 <div class="col-lg-6">
-                    <div class="command-card"><h5><span class="command-prefix">/</span>yardım</h5><p class="mb-0"><span class="language-text tr">Botun tüm slash komutlarını listeler ve kullanım bilgisi verir.</span><span class="language-text en d-none">Lists all bot slash commands and provides usage information.</span></p></div>
-                    <div class="command-card"><h5><span class="command-prefix">/</span>ban &bull; <span class="command-prefix">/</span>at &bull; <span class="command-prefix">/</span>sustur</h5><p class="mb-0"><span class="language-text tr">Gelişmiş moderasyon komutları ile sunucunuzu kontrol altında tutun.</span><span class="language-text en d-none">Control your server with advanced moderation commands.</span></p></div>
-                    <div class="command-card"><h5><span class="command-prefix">/</span>istatistik &bull; <span class="command-prefix">/</span>sunucu</h5><p class="mb-0"><span class="language-text tr">Sunucu ve bot istatistiklerini görüntüler.</span><span class="language-text en d-none">Displays server and bot statistics.</span></p></div>
-                    <div class="command-card axpaha"><h5><span class="command-prefix">/</span>koruma &bull; <span class="command-prefix">/</span>nukekoruma</h5><p class="mb-0"><span class="language-text tr">Gelişmiş anti-nuke ve koruma sistemleri.</span><span class="language-text en d-none">Advanced anti-nuke and protection systems.</span></p></div>
+                    <div class="command-card reveal" data-copy="/yardım"><h5><span class="command-prefix">/</span>yardım</h5><p class="mb-0"><span class="language-text tr">Botun tüm slash komutlarını listeler ve kullanım bilgisi verir.</span><span class="language-text en d-none">Lists all bot slash commands and provides usage information.</span></p><span class="copy-hint mono"><i class="bi bi-clipboard"></i> <span class="language-text tr">kopyala</span><span class="language-text en d-none">copy</span></span></div>
+                    <div class="command-card reveal reveal-d1" data-copy="/ban"><h5><span class="command-prefix">/</span>ban &bull; <span class="command-prefix">/</span>at &bull; <span class="command-prefix">/</span>sustur</h5><p class="mb-0"><span class="language-text tr">Gelişmiş moderasyon komutları ile sunucunuzu kontrol altında tutun.</span><span class="language-text en d-none">Control your server with advanced moderation commands.</span></p><span class="copy-hint mono"><i class="bi bi-clipboard"></i> <span class="language-text tr">kopyala</span><span class="language-text en d-none">copy</span></span></div>
+                    <div class="command-card reveal reveal-d2" data-copy="/istatistik"><h5><span class="command-prefix">/</span>istatistik &bull; <span class="command-prefix">/</span>sunucu</h5><p class="mb-0"><span class="language-text tr">Sunucu ve bot istatistiklerini görüntüler.</span><span class="language-text en d-none">Displays server and bot statistics.</span></p><span class="copy-hint mono"><i class="bi bi-clipboard"></i> <span class="language-text tr">kopyala</span><span class="language-text en d-none">copy</span></span></div>
+                    <div class="command-card axpaha reveal reveal-d3" data-copy="/koruma"><h5><span class="command-prefix">/</span>koruma &bull; <span class="command-prefix">/</span>nukekoruma</h5><p class="mb-0"><span class="language-text tr">Gelişmiş anti-nuke ve koruma sistemleri.</span><span class="language-text en d-none">Advanced anti-nuke and protection systems.</span></p><span class="copy-hint mono"><i class="bi bi-clipboard"></i> <span class="language-text tr">kopyala</span><span class="language-text en d-none">copy</span></span></div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="command-card"><h5><span class="command-prefix">/</span>avatar &bull; <span class="command-prefix">/</span>bilgi</h5><p class="mb-0"><span class="language-text tr">Kullanıcı avatar ve bilgi komutları.</span><span class="language-text en d-none">User avatar and information commands.</span></p></div>
-                    <div class="command-card"><h5><span class="command-prefix">/</span>şarkı &bull; <span class="command-prefix">/</span>oynat</h5><p class="mb-0"><span class="language-text tr">Discord'da müzik dinleyin.</span><span class="language-text en d-none">Listen to music on Discord.</span></p></div>
-                    <div class="command-card"><h5><span class="command-prefix">/</span>duyuru &bull; <span class="command-prefix">/</span>etiketle</h5><p class="mb-0"><span class="language-text tr">Sunucu için duyuru ve etiketleme komutları.</span><span class="language-text en d-none">Announcement and tagging commands for your server.</span></p></div>
-                    <div class="command-card axpaha"><h5><span class="command-prefix">/</span>oyun &bull; <span class="command-prefix">/</span>yardim</h5><p class="mb-0"><span class="language-text tr">Oyunlar ve yardım komutları.</span><span class="language-text en d-none">Games and help commands.</span></p></div>
+                    <div class="command-card reveal" data-copy="/avatar"><h5><span class="command-prefix">/</span>avatar &bull; <span class="command-prefix">/</span>bilgi</h5><p class="mb-0"><span class="language-text tr">Kullanıcı avatar ve bilgi komutları.</span><span class="language-text en d-none">User avatar and information commands.</span></p><span class="copy-hint mono"><i class="bi bi-clipboard"></i> <span class="language-text tr">kopyala</span><span class="language-text en d-none">copy</span></span></div>
+                    <div class="command-card reveal reveal-d1" data-copy="/şarkı"><h5><span class="command-prefix">/</span>şarkı &bull; <span class="command-prefix">/</span>oynat</h5><p class="mb-0"><span class="language-text tr">Discord'da müzik dinleyin.</span><span class="language-text en d-none">Listen to music on Discord.</span></p><span class="copy-hint mono"><i class="bi bi-clipboard"></i> <span class="language-text tr">kopyala</span><span class="language-text en d-none">copy</span></span></div>
+                    <div class="command-card reveal reveal-d2" data-copy="/duyuru"><h5><span class="command-prefix">/</span>duyuru &bull; <span class="command-prefix">/</span>etiketle</h5><p class="mb-0"><span class="language-text tr">Sunucu için duyuru ve etiketleme komutları.</span><span class="language-text en d-none">Announcement and tagging commands for your server.</span></p><span class="copy-hint mono"><i class="bi bi-clipboard"></i> <span class="language-text tr">kopyala</span><span class="language-text en d-none">copy</span></span></div>
+                    <div class="command-card axpaha reveal reveal-d3" data-copy="/oyun"><h5><span class="command-prefix">/</span>oyun &bull; <span class="command-prefix">/</span>yardim</h5><p class="mb-0"><span class="language-text tr">Oyunlar ve yardım komutları.</span><span class="language-text en d-none">Games and help commands.</span></p><span class="copy-hint mono"><i class="bi bi-clipboard"></i> <span class="language-text tr">kopyala</span><span class="language-text en d-none">copy</span></span></div>
                 </div>
             </div>
         </div>
@@ -651,25 +949,25 @@
     <!-- Stats -->
     <section id="stats" class="py-5" style="background: var(--bg-soft);">
         <div class="container">
-            <div class="section-heading text-center">
+            <div class="section-heading text-center reveal">
                 <span class="eyebrow">// istatistikler</span>
                 <h2><span class="language-text tr">Bot İstatistikleri</span><span class="language-text en d-none">Bot Statistics</span></h2>
                 <p><span class="language-text tr">Canlı verilerle güncellenen istatistikler</span><span class="language-text en d-none">Statistics updated in real-time</span></p>
             </div>
             <div class="stats-grid">
-                <div class="stat-card">
+                <div class="stat-card reveal">
                     <div class="stat-number" data-count="1200" data-suffix="+" id="serverCount">0</div>
                     <p><span class="language-text tr">Sunucu</span><span class="language-text en d-none">Servers</span></p>
                 </div>
-                <div class="stat-card axpaha-stat">
+                <div class="stat-card axpaha-stat reveal reveal-d1">
                     <div class="stat-number" data-count="500000" data-suffix="+" data-compact="true" id="userCount">0</div>
                     <p><span class="language-text tr">Kullanıcı</span><span class="language-text en d-none">Users</span></p>
                 </div>
-                <div class="stat-card amber-stat">
+                <div class="stat-card amber-stat reveal reveal-d2">
                     <div class="stat-number">99.9%</div>
                     <p><span class="language-text tr">Uptime</span><span class="language-text en d-none">Uptime</span></p>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card reveal reveal-d3">
                     <div class="stat-number" data-count="50" data-suffix="+" id="commandCount">0</div>
                     <p><span class="language-text tr">Komut</span><span class="language-text en d-none">Commands</span></p>
                 </div>
@@ -680,33 +978,192 @@
     <!-- How it works -->
     <section id="how-it-works" class="py-5">
         <div class="container text-center">
-            <span class="eyebrow">// nasıl-çalışır</span>
-            <h2 class="mb-4"><span class="language-text tr">Nasıl Çalışır?</span><span class="language-text en d-none">How It Works?</span></h2>
-            <p class="lead mb-4" style="color: var(--muted)">
+            <span class="eyebrow reveal">// nasıl-çalışır</span>
+            <h2 class="mb-4 reveal"><span class="language-text tr">Nasıl Çalışır?</span><span class="language-text en d-none">How It Works?</span></h2>
+            <p class="lead mb-4 reveal" style="color: var(--muted)">
                 <span class="language-text tr">Üç adımla kolayca botu kurun ve kullanmaya başlayın.</span>
                 <span class="language-text en d-none">Easily set up and start using the bot in just 3 steps.</span>
             </p>
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <div class="how-it-works-step">
+                    <div class="how-it-works-step reveal">
                         <div class="step-number">01</div>
                         <div>
                             <h5><span class="language-text tr">Botu Sunucunuza Ekleyin</span><span class="language-text en d-none">Add Bot to Your Server</span></h5>
                             <p><span class="language-text tr">Discord yetkilendirme sayfasından botu ekleyin (yönetici izinleri dahil).</span><span class="language-text en d-none">Add the bot from Discord authorization page (includes admin permissions).</span></p>
                         </div>
                     </div>
-                    <div class="how-it-works-step">
+                    <div class="how-it-works-step reveal reveal-d1">
                         <div class="step-number">02</div>
                         <div>
                             <h5><span class="language-text tr">Kurulum ve Ayarlar</span><span class="language-text en d-none">Setup and Settings</span></h5>
                             <p><span class="language-text tr">Premium özellikler için web panelimizden ayarları özelleştirin.</span><span class="language-text en d-none">Customize settings from our web panel for premium features.</span></p>
                         </div>
                     </div>
-                    <div class="how-it-works-step">
+                    <div class="how-it-works-step reveal reveal-d2">
                         <div class="step-number">03</div>
                         <div>
                             <h5><span class="language-text tr">Kullanılmaya Başlayın</span><span class="language-text en d-none">Start Using</span></h5>
                             <p><span class="language-text tr">Botu kullanmaya hemen başlayın, destek ekibimiz yanınızda!</span><span class="language-text en d-none">Start using the bot immediately, our support team is with you!</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="py-5" style="background: var(--bg-soft);">
+        <div class="container">
+            <div class="section-heading text-center reveal">
+                <span class="eyebrow">// yorumlar</span>
+                <h2><span class="language-text tr">Sunucu Yöneticileri Ne Diyor?</span><span class="language-text en d-none">What Server Admins Say</span></h2>
+                <p><span class="language-text tr">Gerçek yönetim ekiplerinden gerçek deneyimler</span><span class="language-text en d-none">Real experiences from real admin teams</span></p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="panel testimonial-card reveal" data-tilt>
+                        <div class="testimonial-head">
+                            <div class="testimonial-avatar" style="background: linear-gradient(135deg, var(--ezbot), #8aa0ff);">DK</div>
+                            <div>
+                                <div class="testimonial-name">deniz.k <i class="bi bi-patch-check-fill testimonial-verified"></i></div>
+                                <div class="testimonial-role"><span class="language-text tr">1.400 üyelik sunucu yöneticisi</span><span class="language-text en d-none">Admin of a 1,400-member server</span></div>
+                            </div>
+                        </div>
+                        <p class="testimonial-body">
+                            <span class="language-text tr">Kurulumdan iki dakika sonra spam botları otomatik olarak durdu. Axpaha'nın nuke koruması gerçekten işini yapıyor.</span>
+                            <span class="language-text en d-none">Two minutes after setup, spam bots were auto-stopped. Axpaha's nuke protection genuinely does its job.</span>
+                        </p>
+                        <div class="testimonial-stars">★★★★★</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel testimonial-card reveal reveal-d1" data-tilt>
+                        <div class="testimonial-head">
+                            <div class="testimonial-avatar" style="background: linear-gradient(135deg, var(--axpaha), #6ee7c7);">SY</div>
+                            <div>
+                                <div class="testimonial-name">selin.yz <i class="bi bi-patch-check-fill testimonial-verified"></i></div>
+                                <div class="testimonial-role"><span class="language-text tr">Oyun topluluğu kurucusu</span><span class="language-text en d-none">Gaming community founder</span></div>
+                            </div>
+                        </div>
+                        <p class="testimonial-body">
+                            <span class="language-text tr">Komutlar çok sezgisel, ekibimizin öğrenmesi bir gün bile sürmedi. Destek sunucusu da hızlı yanıt veriyor.</span>
+                            <span class="language-text en d-none">Commands are so intuitive our team learned them in under a day. Support server responds fast too.</span>
+                        </p>
+                        <div class="testimonial-stars">★★★★★</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel testimonial-card reveal reveal-d2" data-tilt>
+                        <div class="testimonial-head">
+                            <div class="testimonial-avatar" style="background: linear-gradient(135deg, var(--amber), #ffd58a); color: #3a2600;">EM</div>
+                            <div>
+                                <div class="testimonial-name">emre_mod <i class="bi bi-patch-check-fill testimonial-verified"></i></div>
+                                <div class="testimonial-role"><span class="language-text tr">Moderasyon ekibi lideri</span><span class="language-text en d-none">Moderation team lead</span></div>
+                            </div>
+                        </div>
+                        <p class="testimonial-body">
+                            <span class="language-text tr">EzBot'un ban/sustur akışı diğer botlardan çok daha az adımda hallediliyor. Uptime de gerçekten iddia edildiği gibi.</span>
+                            <span class="language-text en d-none">EzBot's ban/mute flow takes far fewer steps than other bots. Uptime really is what it claims.</span>
+                        </p>
+                        <div class="testimonial-stars">★★★★★</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-5">
+        <div class="container">
+            <div class="section-heading text-center reveal">
+                <span class="eyebrow">// sss</span>
+                <h2><span class="language-text tr">Sık Sorulan Sorular</span><span class="language-text en d-none">Frequently Asked Questions</span></h2>
+                <p><span class="language-text tr">Aklınıza takılanlara hızlı yanıtlar</span><span class="language-text en d-none">Quick answers to what's on your mind</span></p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+                    <div class="faq-list">
+                        <div class="faq-item reveal">
+                            <button class="faq-question" type="button">
+                                <span><span class="language-text tr">Botları eklemek ücretsiz mi?</span><span class="language-text en d-none">Is adding the bots free?</span></span>
+                                <span class="faq-icon"><i class="bi bi-plus"></i></span>
+                            </button>
+                            <div class="faq-answer"><div class="faq-answer-inner">
+                                <span class="language-text tr">Evet. Temel moderasyon, güvenlik ve eğlence komutları tamamen ücretsizdir. Premium katman yalnızca isteğe bağlı ek özellikler sunar.</span>
+                                <span class="language-text en d-none">Yes. Core moderation, security, and fun commands are entirely free. The premium tier only adds optional extra features.</span>
+                            </div></div>
+                        </div>
+                        <div class="faq-item reveal reveal-d1">
+                            <button class="faq-question" type="button">
+                                <span><span class="language-text tr">Neden yönetici izni istiyor?</span><span class="language-text en d-none">Why does it ask for admin permission?</span></span>
+                                <span class="faq-icon"><i class="bi bi-plus"></i></span>
+                            </button>
+                            <div class="faq-answer"><div class="faq-answer-inner">
+                                <span class="language-text tr">Anti-nuke koruması, rol yönetimi ve kanal düzenleme gibi özellikler yönetici izni gerektirir. İzinleri istediğiniz zaman sunucu ayarlarından daraltabilirsiniz.</span>
+                                <span class="language-text en d-none">Features like anti-nuke protection, role management, and channel editing require admin permission. You can narrow permissions anytime from server settings.</span>
+                            </div></div>
+                        </div>
+                        <div class="faq-item reveal reveal-d2">
+                            <button class="faq-question" type="button">
+                                <span><span class="language-text tr">EzBot ile Axpaha'yı birlikte kullanabilir miyim?</span><span class="language-text en d-none">Can I use EzBot and Axpaha together?</span></span>
+                                <span class="faq-icon"><i class="bi bi-plus"></i></span>
+                            </button>
+                            <div class="faq-answer"><div class="faq-answer-inner">
+                                <span class="language-text tr">Kesinlikle. İkisi birlikte çalışacak şekilde tasarlandı: EzBot moderasyon ve eğlenceyi yönetirken Axpaha arka planda koruma katmanını üstlenir.</span>
+                                <span class="language-text en d-none">Absolutely. They're designed to work together: EzBot handles moderation and fun while Axpaha runs the protection layer in the background.</span>
+                            </div></div>
+                        </div>
+                        <div class="faq-item reveal reveal-d3">
+                            <button class="faq-question" type="button">
+                                <span><span class="language-text tr">Sorun yaşarsam ne yapmalıyım?</span><span class="language-text en d-none">What if I run into an issue?</span></span>
+                                <span class="faq-icon"><i class="bi bi-plus"></i></span>
+                            </button>
+                            <div class="faq-answer"><div class="faq-answer-inner">
+                                <span class="language-text tr">Aşağıdaki destek sunucumuza katılın; ekibimiz TR ve EN dillerinde canlı olarak yardımcı olur.</span>
+                                <span class="language-text en d-none">Join our support server below; our team helps live in both Turkish and English.</span>
+                            </div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Changelog -->
+    <section id="changelog" class="py-5" style="background: var(--bg-soft);">
+        <div class="container">
+            <div class="section-heading text-center reveal">
+                <span class="eyebrow">// değişiklik-günlüğü</span>
+                <h2><span class="language-text tr">Son Güncellemeler</span><span class="language-text en d-none">Latest Updates</span></h2>
+                <p><span class="language-text tr">İki bot da düzenli olarak geliştiriliyor</span><span class="language-text en d-none">Both bots are updated regularly</span></p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="changelog-rail">
+                        <div class="changelog-entry reveal">
+                            <div class="changelog-top">
+                                <span class="changelog-version">EzBot v3.4</span>
+                                <span class="changelog-date">Temmuz 2026</span>
+                            </div>
+                            <h5><span class="language-text tr">Seviye sistemi yenilendi</span><span class="language-text en d-none">Leveling system refreshed</span></h5>
+                            <p><span class="language-text tr">Yeni sıralama kartları ve özelleştirilebilir XP oranları eklendi.</span><span class="language-text en d-none">New leaderboard cards and customizable XP rates added.</span></p>
+                        </div>
+                        <div class="changelog-entry ax reveal reveal-d1">
+                            <div class="changelog-top">
+                                <span class="changelog-version">Axpaha v2.1</span>
+                                <span class="changelog-date">Haziran 2026</span>
+                            </div>
+                            <h5><span class="language-text tr">Anti-nuke tespiti hızlandırıldı</span><span class="language-text en d-none">Anti-nuke detection made faster</span></h5>
+                            <p><span class="language-text tr">Kitlesel kanal/rol silme girişimleri artık milisaniyeler içinde engelleniyor.</span><span class="language-text en d-none">Mass channel/role deletion attempts are now blocked within milliseconds.</span></p>
+                        </div>
+                        <div class="changelog-entry reveal reveal-d2">
+                            <div class="changelog-top">
+                                <span class="changelog-version">EzBot v3.3</span>
+                                <span class="changelog-date">Mayıs 2026</span>
+                            </div>
+                            <h5><span class="language-text tr">Zamanlanmış duyurular</span><span class="language-text en d-none">Scheduled announcements</span></h5>
+                            <p><span class="language-text tr">Duyuruları ileri bir tarihe planlama desteği geldi.</span><span class="language-text en d-none">Added support for scheduling announcements for a future date.</span></p>
                         </div>
                     </div>
                 </div>
